@@ -343,7 +343,7 @@ p { margin: 0; }
   pointer-events: none;
 }
 .center * { pointer-events: none; }
-.center .device, .center .device * { pointer-events: auto; }
+.center .device, .center .device *, .center .steps button { pointer-events: auto; }
 
 .caps {
   display: grid;
@@ -430,6 +430,40 @@ p { margin: 0; }
   background: radial-gradient(50% 40% at 50% 30%, rgba(22,21,19,.18), transparent 70%);
   z-index: -1;
   pointer-events: none;
+}
+
+/* Chapter step jump pills */
+.steps {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  margin-top: 8px;
+}
+.steps button {
+  all: unset;
+  cursor: pointer;
+  font: 700 11.5px var(--f-code);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 5px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: 2px 2px 0 var(--ink);
+  transition: transform .1s, box-shadow .1s, background .2s, color .2s;
+}
+.steps button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+  color: var(--ink);
+}
+.steps button.on {
+  background: var(--yellow);
+  color: var(--ink);
 }
 
 /* ==========================================================================
@@ -1622,6 +1656,20 @@ dialog .x {
     transition-duration: .01ms !important;
   }
 }
+
+/* ===== Kinetic wordmark (nav) ===== */
+.logo .kw{display:inline-flex}
+.logo .kw>span{display:inline-block;position:relative;transition:transform .35s cubic-bezier(.3,1.8,.5,1),color .2s}
+.logo .kw>span.pop{transform:translateY(-.28em) rotate(-10deg) scale(1.15);color:var(--green)}
+.logo .kw .ic{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .15s}
+.logo .kw .ic b{width:.62em;height:.74em;border:2.5px solid var(--ink);border-radius:4px;background:var(--yellow);display:block}
+.logo .kw>span.icon .l{opacity:0}.logo .kw>span.icon .ic{opacity:1}
+/* ===== Particle wordmark (footer) ===== */
+.site-foot{background:var(--beige)!important;color:var(--ink)!important;background-image:radial-gradient(var(--dot) 1.3px,transparent 1.5px)!important;background-size:22px 22px!important;border-top:2.5px solid var(--ink)}
+.site-foot .pw{position:relative;width:100%;height:clamp(120px,19vw,300px)}
+.site-foot .pw canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.site-foot .row{color:var(--muted)!important}
+@media (prefers-reduced-motion:reduce){.logo .kw>span{transition:none}}
 </style>
 </head>
 <body>
@@ -1667,7 +1715,7 @@ dialog .x {
 <!-- FIXED NAVIGATION -->
 <header class="nav">
   <div class="in">
-    <button class="logo" id="navLogo" aria-label="Frogineer, back to top">Frogineer</button>
+    <button class="logo" id="navLogo" aria-label="Frogineer, back to top"><span class="kw" id="kw" aria-hidden="true"></span></button>
     <nav aria-label="Sections">
       <a href="#scene">Story</a>
       <button id="navLaunchOs" class="btn y">⚡ Interactive OS</button>
@@ -1853,6 +1901,17 @@ dialog .x {
             </div>
           </div>
         </div>
+
+        <!-- Jump to chapters -->
+        <div class="steps" id="steps" aria-label="Jump to a story chapter">
+          <button data-go="1">1 · Problem</button>
+          <button data-go="2">2 · Storage</button>
+          <button data-go="3">3 · AI</button>
+          <button data-go="4">4 · Cloud</button>
+          <button data-go="5">5 · Interfaces</button>
+          <button data-go="6">6 · Work</button>
+          <button class="btn y" id="stageZoomBtn" style="padding:4px 10px;font-size:12px;margin-left:6px">⚡ Zoom In</button>
+        </div>
       </div>
     </div>
   </section>
@@ -1977,7 +2036,7 @@ dialog .x {
 
 <!-- GIANT FOOTER -->
 <footer class="site-foot">
-  <div class="giant">FROGINEER</div>
+  <div class="pw" aria-label="FROGINEER"><canvas id="pwc"></canvas></div>
   <div class="wrap">
     <div class="row">
       <span>© 2026 Frogineer · Freelance Consultant · NAS · AI · Cloud · Web</span>
@@ -2799,6 +2858,7 @@ $("#screen").addEventListener("click", e => {
   if (!isZoomed) zoomIn();
 });
 $("#heroZoomBtn").addEventListener("click", zoomIn);
+$("#stageZoomBtn").addEventListener("click", zoomIn);
 $("#navLaunchOs").addEventListener("click", e => {
   e.preventDefault();
   const r = screenEl.getBoundingClientRect();
@@ -2824,7 +2884,7 @@ document.addEventListener("keydown", e => {
 gsap.registerPlugin(ScrollTrigger);
 
 const stageEl = $("#stage"), deviceEl = $("#device"), slotEl = $("#slot"), lidEl = $("#lid"), laptopEl = $("#laptop");
-const capsEls = $$(".cap");
+const capsEls = $$(".cap"), stepBtns = $$("#steps button[data-go]");
 const glowEl = $("#glow");
 
 function getPos(el) {
@@ -2854,6 +2914,7 @@ const heroS = () => {
 const GLOW_COLORS = ["#2E9E57","#E6A524","#2E9E57","#F5C430","#2B57E6","#F3A9C4","#2E9E57"];
 
 gsap.set(capsEls, { autoAlpha: 0 });
+gsap.set("#steps", { autoAlpha: 0 });
 gsap.set(deviceEl, { transformOrigin: "50% 50%" });
 
 // On load: lid swings open smoothly
@@ -2883,7 +2944,8 @@ const stops = [0], starts = [0];
 tl.to("#heroCopy", { x: -80, autoAlpha: 0, duration: .5 }, 0)
   .to("#cue", { autoAlpha: 0, duration: .2 }, 0)
   .fromTo(deviceEl, { x: heroX, y: heroY, scale: heroS }, { x: 0, y: 0, scale: 1, duration: 1, ease: "power3.inOut", immediateRender: true }, 0)
-  .fromTo(laptopEl, { rotationY: -26, rotationX: -20 }, { rotationY: 0, rotationX: -5, duration: 1, ease: "power3.inOut", immediateRender: true }, 0);
+  .fromTo(laptopEl, { rotationY: -26, rotationX: -20 }, { rotationY: 0, rotationX: -5, duration: 1, ease: "power3.inOut", immediateRender: true }, 0)
+  .to("#steps", { autoAlpha: 1, duration: .3 }, .8);
 
 // Steps 1 to 6 (Chapters)
 const CH = capsEls.length;
@@ -2933,6 +2995,7 @@ let curChap = -1;
 function setActiveChapter(i) {
   if (i === curChap) return;
   curChap = i;
+  stepBtns.forEach(b => b.classList.toggle("on", +b.dataset.go === i));
 }
 setActiveChapter(0);
 
@@ -2941,6 +3004,13 @@ function scrollToChapter(i) {
   window.scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
 }
 
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-go]");
+  if (b) {
+    e.preventDefault();
+    scrollToChapter(+b.dataset.go);
+  }
+});
 $("#heroStoryBtn").onclick = () => scrollToChapter(1);
 $("#navLogo").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -3062,6 +3132,57 @@ function spawnConfetti(fromEl) {
     })();
   }
 }
+</script>
+
+<script>
+/* Kinetic wordmark in the nav: letters hop in a wave, pop on hover, some flip into little drives */
+(function(){
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches, kw=document.getElementById("kw"); if(!kw) return;
+  kw.innerHTML=[..."Frogineer"].map(l=>`<span><span class="l">${l}</span><span class="ic"><b></b></span></span>`).join("");
+  const L=[...kw.children];
+  const pop=(s,icon)=>{s.classList.add("pop");if(icon){s.classList.add("icon");setTimeout(()=>s.classList.remove("icon"),900)}setTimeout(()=>s.classList.remove("pop"),380)};
+  L.forEach(s=>s.addEventListener("pointerenter",()=>pop(s,false)));
+  if(reduce) return;
+  const wave=()=>L.forEach((s,i)=>setTimeout(()=>pop(s,i===2||i===6),i*90));
+  setTimeout(wave,900); setInterval(wave,7000);
+  document.getElementById("navLogo").addEventListener("pointerenter",wave);
+})();
+/* Particle wordmark in the footer: dots fly in to spell FROGINEER, scatter from the cursor */
+(function(){
+  const c=document.getElementById("pwc"); if(!c) return;
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches, x=c.getContext("2d");
+  let W,H,d,pts=[],tg=[],active=false,mx=-1e5,my=-1e5;
+  function build(){
+    const r=c.getBoundingClientRect(); d=Math.min(devicePixelRatio||1,2); W=c.width=Math.max(1,r.width*d); H=c.height=Math.max(1,r.height*d);
+    const o=document.createElement("canvas");o.width=W;o.height=H;const g=o.getContext("2d");
+    let fs=H*.9; g.font=`900 ${fs}px Unbounded, "Arial Black", sans-serif`; const mw=g.measureText("FROGINEER").width; if(mw>W*.94){fs*=W*.94/mw}
+    g.font=`900 ${fs}px Unbounded, "Arial Black", sans-serif`; g.textAlign="center"; g.textBaseline="middle"; g.fillText("FROGINEER",W/2,H/2);
+    const data=g.getImageData(0,0,W,H).data, step=Math.max(4,Math.round(W/260)); tg=[];
+    for(let yy=0;yy<H;yy+=step)for(let xx=0;xx<W;xx+=step)if(data[(yy*W+xx)*4+3]>140)tg.push([xx+(Math.random()-.5)*step*.5,yy+(Math.random()-.5)*step*.5]);
+    pts=tg.map(()=>({x:Math.random()*W,y:Math.random()*H*2-H*.5,vx:0,vy:0,s:(Math.random()*.6+.7)}));
+    if(reduce) pts.forEach((p,i)=>{p.x=tg[i][0];p.y=tg[i][1]});
+    x.setTransform(1,0,0,1,0,0);
+  }
+  c.addEventListener("pointermove",e=>{const r=c.getBoundingClientRect();mx=(e.clientX-r.left)*d;my=(e.clientY-r.top)*d});
+  c.addEventListener("pointerleave",()=>{mx=my=-1e5});
+  new IntersectionObserver(es=>es.forEach(e=>{active=e.isIntersecting}),{threshold:.1}).observe(c);
+  function frame(t){
+    if(active||reduce){
+      x.clearRect(0,0,W,H); x.fillStyle="#161513"; const sz=Math.max(2,W/420);
+      for(let i=0;i<pts.length;i++){const p=pts[i],[tx,ty]=tg[i];
+        if(!reduce){p.vx+=(tx-p.x)*.02;p.vy+=(ty-p.y)*.02;
+          const dx=p.x-mx,dy=p.y-my,dd=dx*dx+dy*dy,R=70*d; if(dd<R*R){const f=(1-Math.sqrt(dd)/R)*6;p.vx+=dx/Math.sqrt(dd+1)*f;p.vy+=dy/Math.sqrt(dd+1)*f}
+          p.vx*=.84;p.vy*=.84;p.x+=p.vx;p.y+=p.vy}
+        x.fillRect(p.x,p.y,sz*p.s,sz*p.s)}
+    }
+    if(!reduce) requestAnimationFrame(frame);
+  }
+  const start=()=>{build();requestAnimationFrame(frame)};
+  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(start);
+  let rt; addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(build,200)});
+  // replay the fly-in each time the footer comes back into view
+  new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!reduce)pts.forEach(p=>{p.x=Math.random()*W;p.y=Math.random()*H*2-H*.5})}),{threshold:.35}).observe(c);
+})();
 </script>
 </body>
 </html>

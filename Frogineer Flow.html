@@ -1,0 +1,181 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Frogineer Flow</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800;900&family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one focal point. A field of ink dots stays fixed on screen and flows from shape to shape as the
+   story scrolls past it; chapter text and oversized background numerals drift at different speeds (parallax). */
+:root{color-scheme:light;--paper:#ECE8DC;--paper2:#E4DFD0;--ink:#161513;--muted:#6A665B;--line:#CFC9B8;--green:#2E9E57;
+  --chunk:"Unbounded","Arial Black",sans-serif;--tech:"Space Grotesk","Helvetica Neue",Arial,sans-serif;--code:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --gl:max(24px,env(safe-area-inset-left,0px));--gr:max(24px,env(safe-area-inset-right,0px))}
+*{box-sizing:border-box}
+html{scroll-behavior:auto}
+body{margin:0;background:var(--paper);color:var(--ink);font:300 18px/1.7 var(--tech);overflow-x:clip;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.45),transparent 60%),radial-gradient(rgba(22,21,19,.07) 1px,transparent 1.2px) 0 0/24px 24px}
+#field{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:auto}
+.nav{position:fixed;top:0;left:0;right:0;z-index:10;padding:calc(18px + env(safe-area-inset-top,0px)) var(--gr) 18px var(--gl);display:flex;align-items:center;gap:24px;mix-blend-mode:multiply}
+.nav b{font:800 18px var(--chunk);letter-spacing:-.03em}
+.nav span{margin-left:auto;font:500 11px var(--code);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.prog{position:fixed;right:var(--gr);top:50%;transform:translateY(-50%);z-index:10;display:grid;gap:10px}
+.prog i{width:2px;height:22px;background:var(--line);display:block;transition:background .3s,height .3s}
+.prog i.on{background:var(--ink);height:38px}
+main{position:relative;z-index:2;pointer-events:none}
+main a,main button{pointer-events:auto}
+.ch{position:relative;min-height:150vh;display:grid;align-items:center;padding:0 var(--gr) 0 var(--gl)}
+.ch .num{position:absolute;top:10%;font:900 clamp(160px,30vw,460px)/.8 var(--chunk);letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1px rgba(22,21,19,.10);z-index:-1;user-select:none}
+.ch.l .num{right:2vw}.ch.r .num{left:2vw}
+.txt{max-width:440px;display:grid;gap:18px}
+.ch.l .txt{justify-self:start;margin-left:4vw}
+.ch.r .txt{justify-self:end;margin-right:6vw}
+.eyebrow{font:500 11px var(--code);letter-spacing:.24em;text-transform:uppercase;color:var(--muted);display:flex;gap:12px;align-items:center}
+.eyebrow::before{content:"";width:32px;height:1px;background:var(--ink)}
+h2{margin:0;font:800 clamp(34px,4.4vw,64px)/1 var(--chunk);letter-spacing:-.045em}
+h2 em{font-style:normal;color:var(--green)}
+.txt p{margin:0;color:#3d3a33;font-size:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{font:400 12px var(--code);border:1px solid var(--ink);border-radius:999px;padding:3px 12px}
+/* hero */
+.hero{min-height:100vh;display:grid;align-content:end;justify-items:center;text-align:center;padding:0 var(--gr) 9vh var(--gl)}
+.hero .top{position:absolute;top:18vh;left:0;right:0;display:grid;justify-items:center;gap:10px}
+.hero .top span{font:500 11px var(--code);letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.hero h1{margin:0;font:500 clamp(22px,2.4vw,32px)/1.3 var(--tech);letter-spacing:-.01em;max-width:30ch}
+.hero h1 b{font-weight:500;background:linear-gradient(transparent 62%,rgba(46,158,87,.35) 62%)}
+.cue{margin-top:28px;font:500 10.5px var(--code);letter-spacing:.3em;text-transform:uppercase;color:var(--muted);display:grid;justify-items:center;gap:10px}
+.cue i{width:1px;height:46px;background:var(--ink);transform-origin:top;animation:cue 2s infinite}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.btn{display:inline-flex;align-items:center;gap:10px;border:1.5px solid var(--ink);border-radius:999px;padding:12px 22px;font:500 13px var(--code);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--ink);background:var(--paper);transition:background .25s,color .25s}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.end{min-height:120vh;display:grid;align-content:end;justify-items:center;text-align:center;padding:0 var(--gr) 12vh var(--gl);gap:18px}
+.end p{color:#3d3a33;max-width:46ch;margin:0}
+.end .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.note{position:relative;z-index:2;text-align:center;font:500 11px var(--code);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:30px 16px 40px;background:var(--paper2);border-top:1px solid var(--line)}
+@media (max-width:820px){
+  .ch{min-height:130vh;align-items:end;padding-bottom:12vh}
+  .ch.l .txt,.ch.r .txt{justify-self:stretch;margin:0;max-width:none;background:rgba(236,232,220,.86);backdrop-filter:blur(6px);padding:20px;border:1px solid var(--line)}
+  .prog{display:none}
+  .hero .top{top:14vh}
+}
+@media (prefers-reduced-motion:reduce){.cue i{animation:none}}
+</style>
+
+<canvas id="field" aria-hidden="true"></canvas>
+<header class="nav"><b>Frogineer</b><span>Freelance · Singapore</span></header>
+<div class="prog" id="prog" aria-hidden="true"></div>
+
+<main>
+  <section class="hero" data-shape="word">
+    <div class="top"><span>Freelance consultant · NAS · AI · Cloud · Web</span></div>
+    <div>
+      <h1>Your data has a <b>story</b>. I build the systems it lives in.</h1>
+      <div class="cue"><i></i>Scroll</div>
+    </div>
+  </section>
+
+  <section class="ch l" data-shape="name"><span class="num">01</span>
+    <div class="txt"><span class="eyebrow">The person</span><h2>Hi, I'm <em>Jaxon.</em></h2>
+      <p>The engineer behind Frogineer. I study software at Nanyang Polytechnic, intern at Miracle Sea (Miracle Finland Oy), and build systems for businesses in Singapore.</p></div></section>
+
+  <section class="ch r" data-shape="nas"><span class="num">02</span>
+    <div class="txt"><span class="eyebrow">Storage</span><h2>One safe home for <em>every file.</em></h2>
+      <p>NAS setups with redundancy, snapshots and backups that are actually tested.</p><div class="chips"><span>Synology</span><span>QNAP</span><span>TrueNAS</span></div></div></section>
+
+  <section class="ch l" data-shape="chip"><span class="num">03</span>
+    <div class="txt"><span class="eyebrow">Private AI</span><h2>Ask your files <em>questions.</em></h2>
+      <p>AI and agents that run on your own documents, with sources on every answer.</p><div class="chips"><span>Local LLM</span><span>RAG</span><span>MCP</span></div></div></section>
+
+  <section class="ch r" data-shape="cloud"><span class="num">04</span>
+    <div class="txt"><span class="eyebrow">Cloud</span><h2>Reachable <em>anywhere.</em></h2>
+      <p>Hybrid NAS-to-cloud sync and disaster recovery, so every office and device sees the same files.</p><div class="chips"><span>AWS</span><span>Azure</span><span>Docker</span></div></div></section>
+
+  <section class="ch l" data-shape="laptop"><span class="num">05</span>
+    <div class="txt"><span class="eyebrow">Selected work</span><h2>Built for <em>real businesses.</em></h2>
+      <p>Horizon-ERP for Espresgo, job-costing for SGWoodworks, and more. Step inside the computer to explore them.</p><a class="btn" href="#">Open projects →</a></div></section>
+
+  <section class="end" data-shape="hello">
+    <span class="eyebrow">06 · Contact</span>
+    <p>Small business, startup, studio or recruiter: tell me what you're working on.</p>
+    <div class="row"><a class="btn solid" href="mailto:yjtanyuejun@outlook.com">Book a free call</a><a class="btn" href="https://linkedin.com/in/jaxon-tan" target="_blank" rel="noopener">LinkedIn ↗</a></div>
+  </section>
+</main>
+<div class="note">Prototype of the homepage opening · the projects computer would follow here</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const cv=document.getElementById("field"), ctx=cv.getContext("2d");
+const sections=[...document.querySelectorAll("[data-shape]")];
+document.getElementById("prog").innerHTML=sections.map(()=>"<i></i>").join("");
+const N=innerWidth<820?1100:2000;
+let W,H,D,shapes={},pts=[],mx=-1e5,my=-1e5;
+
+// where each shape sits on screen (fractions of the viewport) and how big it is
+function place(name){const m=innerWidth<820;
+  const P={word:[.5,m?.42:.44,m?.92:.86],name:[m?.5:.68,m?.38:.5,m?.7:.42],nas:[m?.5:.3,m?.36:.5,m?.5:.3],chip:[m?.5:.7,m?.36:.5,m?.5:.3],
+           cloud:[m?.5:.3,m?.36:.5,m?.62:.36],laptop:[m?.5:.68,m?.36:.5,m?.72:.42],hello:[.5,m?.36:.4,m?.8:.6]};return P[name]}
+
+// draw a shape off-screen and sample N points from it (normalised to a unit box)
+function sample(draw,aspect){const S=600,o=document.createElement("canvas");o.width=S;o.height=Math.round(S/aspect);const g=o.getContext("2d");g.fillStyle="#000";g.strokeStyle="#000";draw(g,o.width,o.height);
+  const d=g.getImageData(0,0,o.width,o.height).data,cand=[];for(let y=0;y<o.height;y+=3)for(let x=0;x<o.width;x+=3)if(d[(y*o.width+x)*4+3]>120)cand.push([x/o.width-.5,(y/o.height-.5)/aspect]);
+  const out=[];for(let i=0;i<N;i++){const c=cand[Math.floor(Math.random()*cand.length)]||[0,0];out.push([c[0]+(Math.random()-.5)*.004,c[1]+(Math.random()-.5)*.004])}return out}
+function text(str,weight){return (g,w,h)=>{let fs=h*.9;g.font=`${weight} ${fs}px Unbounded, "Arial Black", sans-serif`;const mw=g.measureText(str).width;if(mw>w*.98)fs*=w*.98/mw;g.font=`${weight} ${fs}px Unbounded, "Arial Black", sans-serif`;g.textAlign="center";g.textBaseline="middle";g.fillText(str,w/2,h/2)}}
+function buildShapes(){
+  shapes.word=sample(text("FROGINEER",900),5.2);
+  shapes.name=sample(text("JT",900),1.3);
+  shapes.nas=sample((g,w,h)=>{g.lineWidth=w*.035;g.beginPath();g.roundRect(w*.18,h*.04,w*.64,h*.92,w*.06);g.stroke();
+    for(const y of [.16,.34,.52])g.fillRect(w*.28,h*y,w*.44,h*.1);g.beginPath();g.arc(w*.32,h*.8,w*.035,0,7);g.arc(w*.45,h*.8,w*.035,0,7);g.fill()},.75);
+  shapes.chip=sample((g,w,h)=>{g.lineWidth=w*.035;g.strokeRect(w*.22,h*.22,w*.56,h*.56);g.fillRect(w*.36,h*.36,w*.28,h*.28);
+    for(let i=0;i<5;i++){const p=.3+i*.1;g.fillRect(w*p-w*.015,h*.06,w*.03,h*.14);g.fillRect(w*p-w*.015,h*.8,w*.03,h*.14);g.fillRect(w*.06,h*p-h*.015,w*.14,h*.03);g.fillRect(w*.8,h*p-h*.015,w*.14,h*.03)}},1);
+  shapes.cloud=sample((g,w,h)=>{g.beginPath();[[.32,.6,.2],[.5,.42,.27],[.7,.58,.19]].forEach(([a,b,r])=>{g.moveTo(w*a+h*r,h*b);g.arc(w*a,h*b,h*r,0,7)});g.fill();g.fillRect(w*.14,h*.6,w*.72,h*.2)},1.6);
+  shapes.laptop=sample((g,w,h)=>{g.lineWidth=w*.025;g.beginPath();g.roundRect(w*.16,h*.06,w*.68,h*.66,w*.03);g.stroke();
+    g.fillRect(w*.22,h*.14,w*.56,h*.05);g.beginPath();g.moveTo(w*.06,h*.8);g.lineTo(w*.94,h*.8);g.lineTo(w*.88,h*.92);g.lineTo(w*.12,h*.92);g.closePath();g.fill()},1.5);
+  shapes.hello=sample(text("HELLO",900),3.2);
+}
+function resize(){D=Math.min(devicePixelRatio||1,2);W=cv.width=innerWidth*D;H=cv.height=innerHeight*D}
+function targetFor(name){const [px,py,sc]=place(name),s=shapes[name],size=innerWidth*sc*D;return s.map(([x,y])=>[px*W+x*size,py*H+y*size])}
+
+let targets=[], cur={from:0,to:0,t:0};
+function setup(){resize();buildShapes();targets=sections.map(s=>targetFor(s.dataset.shape));
+  if(!pts.length)pts=Array.from({length:N},(_,i)=>({x:Math.random()*W,y:Math.random()*H,vx:0,vy:0,s:.6+Math.random()*.9,g:Math.random()<.08,d:Math.random()}))}
+
+cv.addEventListener("pointermove",e=>{mx=e.clientX*D;my=e.clientY*D});cv.addEventListener("pointerleave",()=>{mx=my=-1e5});
+addEventListener("pointermove",e=>{mx=e.clientX*D;my=e.clientY*D});
+
+function frame(t){
+  ctx.clearRect(0,0,W,H);const A=targets[cur.from],B=targets[cur.to],k=cur.t,sz=Math.max(1.6,innerWidth/700)*D;
+  for(let i=0;i<N;i++){const p=pts[i];
+    // each dot travels with its own slight delay, so the shape pours rather than snaps
+    const kk=Math.min(1,Math.max(0,(k-p.d*.25)/.75)),e=kk<.5?2*kk*kk:1-Math.pow(-2*kk+2,2)/2;
+    const tx=A[i][0]+(B[i][0]-A[i][0])*e, ty=A[i][1]+(B[i][1]-A[i][1])*e;
+    const wob=reduce?0:Math.sin(t*.0012+i)*.6*D;
+    p.vx+=(tx-p.x)*.06;p.vy+=(ty+wob-p.y)*.06;
+    const dx=p.x-mx,dy=p.y-my,dd=dx*dx+dy*dy,R=90*D;if(dd<R*R){const f=(1-Math.sqrt(dd)/R)*7;p.vx+=dx/Math.sqrt(dd+1)*f;p.vy+=dy/Math.sqrt(dd+1)*f}
+    p.vx*=.78;p.vy*=.78;p.x+=p.vx;p.y+=p.vy;
+    ctx.fillStyle=p.g?"#2E9E57":"#161513";ctx.fillRect(p.x,p.y,sz*p.s,sz*p.s)}
+  requestAnimationFrame(frame)}
+
+function start(){setup();
+  gsap.registerPlugin(ScrollTrigger);
+  const prog=[...document.querySelectorAll("#prog i")];
+  // which pair of shapes we are between, and how far
+  ScrollTrigger.create({start:0,end:"max",onUpdate:()=>{
+    const mid=scrollY+innerHeight*.5;let i=0;sections.forEach((s,j)=>{if(s.offsetTop<=mid)i=j});
+    const s=sections[i],n=sections[Math.min(i+1,sections.length-1)];
+    const span=Math.max(1,n.offsetTop-s.offsetTop),local=i===sections.length-1?0:Math.min(1,Math.max(0,(mid-s.offsetTop-span*.35)/(span*.55)));
+    cur={from:i,to:Math.min(i+1,sections.length-1),t:local};prog.forEach((p,j)=>p.classList.toggle("on",j===(local>.5?cur.to:i)))}});
+  if(!reduce){
+    // parallax: numerals drift slower, chapter text rises faster than the page
+    document.querySelectorAll(".num").forEach(n=>gsap.fromTo(n,{yPercent:-30},{yPercent:40,ease:"none",scrollTrigger:{trigger:n.parentElement,start:"top bottom",end:"bottom top",scrub:true}}));
+    document.querySelectorAll(".txt").forEach(t=>gsap.fromTo(t,{y:120,opacity:0},{y:-60,opacity:1,ease:"none",scrollTrigger:{trigger:t.parentElement,start:"top 85%",end:"center 40%",scrub:true}}));
+    gsap.to(".hero h1",{y:-120,opacity:0,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom 30%",scrub:true}});
+  }
+  ScrollTrigger.refresh();requestAnimationFrame(frame);
+  let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{resize();buildShapes();targets=sections.map(s=>targetFor(s.dataset.shape))},200)});
+}
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(start);
+</script>
+
+</body></html>
