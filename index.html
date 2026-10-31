@@ -826,6 +826,67 @@ body.is-zoomed .screen-cue { display: none !important; }
   border-radius: 0 !important;
 }
 
+/* ---------- OS BOOT SCREEN ---------- */
+.boot {
+  position: absolute;
+  inset: 0;
+  z-index: 2500;
+  background: #171614;
+  color: #F4E9C8;
+  font: 400 14.5px/1.85 var(--f-code);
+  padding: 30px 36px;
+  cursor: pointer;
+  transition: opacity .35s ease, transform .35s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
+  user-select: none;
+}
+.boot.done {
+  opacity: 0;
+  transform: scale(1.03);
+  pointer-events: none;
+}
+.boot-term {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.boot-term div {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.boot .ok { color: #7FD99C; font-weight: 700; }
+.boot .skip {
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  color: #9C957F;
+  font: 500 11.5px var(--f-code);
+  letter-spacing: .04em;
+  opacity: .75;
+  transition: opacity .15s, color .15s;
+}
+.boot:hover .skip {
+  opacity: 1;
+  color: var(--yellow);
+}
+.boot .cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--yellow);
+  vertical-align: -2px;
+  margin-left: 6px;
+  animation: bootBlink .8s infinite;
+}
+@keyframes bootBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 /* Zoom HUD when inside OS */
 body.is-zoomed { overflow: hidden !important; }
 .os-zoom-hud {
@@ -1748,6 +1809,12 @@ dialog .x {
 
                       <!-- ================= FROGINEER OS ================= -->
                       <div id="osContainer">
+                        <!-- OS Boot Screen -->
+                        <div class="boot" id="boot" role="status" aria-live="polite">
+                          <div class="boot-term" id="bootLines"></div>
+                          <div class="skip">click to skip</div>
+                        </div>
+
                         <!-- OS Menu bar -->
                         <header class="menubar">
                           <button class="brand" id="osBrandBtn" aria-label="Frogineer: make the icons hop">
@@ -2605,6 +2672,7 @@ function initOSTerminal(w) {
     contact: () => { openWin("contact"); return `Email: ${esc(ME.email)}`; },
     neofetch: () => `<span class="ok">   (o)(o)   </span>  <span class="hi">frog@nas-01</span>\n<span class="ok">  ( ____ )  </span>  os       FrogineerOS 2.0\n<span class="ok">  /|____|\\  </span>  role     NAS · AI · Cloud · Web consultant\n              uptime   always available\n              status   <span class="ok">taking new projects</span>`,
     ribbit: () => { hopAllIcons(); spawnConfetti(inp); return `<span class="ok">ribbit!</span> icons hopping!`; },
+    reboot: () => { rebootOS(); return `<span class="ok">rebooting frogineer-os...</span>`; },
     "sudo": (a) => a.join(" ") === "hire-me" ? (openWin("contact"), spawnConfetti(inp), `<span class="ok">permission granted!</span> opening contact…`) : `sudo: try "sudo hire-me"`,
     clear: () => { out.innerHTML = ""; return null; }
   };
@@ -2624,12 +2692,93 @@ function initOSTerminal(w) {
 }
 
 /* ==========================================================================
+   OS BOOT SEQUENCE (PLAYS AS LAPTOP LID OPENS)
+   ========================================================================== */
+const BOOT_LINES = [
+  ["FROG BIOS v1.0 · checking pond...", ""],
+  ["mounting /projects", "ok"],
+  ["loading services: nas ai cloud web", "ok"],
+  ["warming up the terminal", "ok"],
+  ["starting frogineer-os", "ok"]
+];
+
+let bootDone = false;
+let bootTimers = [];
+
+function clearBootTimers() {
+  bootTimers.forEach(t => clearTimeout(t));
+  bootTimers = [];
+}
+
+function finishBoot() {
+  if (bootDone) return;
+  bootDone = true;
+  clearBootTimers();
+  const el = $("#boot");
+  if (el) {
+    el.classList.add("done");
+    setTimeout(() => {
+      el.style.display = "none";
+      if (Object.keys(openWins).length === 0) {
+        openWin("welcome");
+      }
+    }, reduce ? 0 : 350);
+  } else {
+    if (Object.keys(openWins).length === 0) {
+      openWin("welcome");
+    }
+  }
+}
+
+function bootOS() {
+  const el = $("#boot"), L = $("#bootLines");
+  if (!el || !L) return;
+  clearBootTimers();
+  bootDone = false;
+  el.style.display = "flex";
+  el.classList.remove("done");
+  L.innerHTML = "";
+
+  el.onclick = () => finishBoot();
+
+  if (reduce) {
+    finishBoot();
+    return;
+  }
+
+  BOOT_LINES.forEach(([t, s], i) => {
+    const tid = setTimeout(() => {
+      if (bootDone) return;
+      const c = L.querySelector(".cursor");
+      if (c) c.remove();
+      L.insertAdjacentHTML("beforeend", `<div>${esc(t)}${s ? ` <span class="ok">[ ${esc(s)} ]</span>` : ""}<span class="cursor"></span></div>`);
+      if (i === BOOT_LINES.length - 1) {
+        const endTid = setTimeout(finishBoot, 480);
+        bootTimers.push(endTid);
+      }
+    }, 360 * i + 350);
+    bootTimers.push(tid);
+  });
+}
+
+function rebootOS() {
+  const el = $("#boot"), L = $("#bootLines");
+  if (!el || !L) return;
+  bootDone = false;
+  Object.keys(openWins).forEach(id => closeWin(id));
+  bootOS();
+}
+
+/* ==========================================================================
    ZOOM IN / ZOOM OUT CONTROLLER
    ========================================================================== */
 let isZoomed = false;
 
 function zoomIn() {
   if (isZoomed) return;
+  if (!bootDone) {
+    finishBoot();
+  }
   isZoomed = true;
   document.body.classList.add("is-zoomed");
 
@@ -2851,10 +3000,8 @@ document.addEventListener("click", e => {
 $("#heroStoryBtn").onclick = () => scrollToChapter(1);
 $("#navLogo").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
-/* Initial default windows */
-setTimeout(() => {
-  openWin("welcome");
-}, 400);
+/* Boot OS animation when lid opens */
+bootOS();
 
 /* ==========================================================================
    WORK TRACK, MODAL DIALOG & STANDALONE TERMINAL
