@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Jaxon Tan · Frogineer</title>
+<meta name="description" content="Jaxon Tan, the engineer behind Frogineer, presented as a gallery walk: portrait, disciplines, client work, timeline, testimonials and contact.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap">
+<style>
+/* Layout: a private gallery. Gilded doors open onto a hall that is walked sideways; every room is an exhibit
+   lit by a ceiling spotlight, with museum labels, engraved plaques, a visitor book and a reception desk. */
+:root{
+  color-scheme:light;
+  --bg:#F7F3EC; --wall:#F3EDE2; --wall2:#ECE4D6; --surface:#FFFCF7; --ink:#1F3A2E; --body:#4B5B52; --muted:#7E867E;
+  --line:#E6DDCD; --line2:#D9CCB5; --gold:#B08D57; --gold-ink:#8C6B37; --gold-soft:#EFE4D0; --gilt:#C9A86A;
+  --emerald:#2E6B4F; --emerald-deep:#1F4D39; --emerald-soft:#E3EDE6; --floor:#E4D9C6;
+  --f-display:"Cormorant Garamond", Garamond, "Times New Roman", serif;
+  --f-sans:"Jost", "Futura", "Century Gothic", "Helvetica Neue", Arial, sans-serif;
+  --gl:max(24px,env(safe-area-inset-left,0px)); --gr:max(24px,env(safe-area-inset-right,0px));
+  --nav:72px; --top:calc(var(--nav) + env(safe-area-inset-top,0px));
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:300 17px/1.7 var(--f-sans);overflow-x:clip;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:inherit}
+:focus-visible{outline:1.5px solid var(--gold);outline-offset:4px}
+h1,h2,h3{margin:0;font-family:var(--f-display);font-weight:500;line-height:1.02;text-wrap:balance}
+h1 em,h2 em,h3 em{font-style:italic;color:var(--gold-ink)}
+p{margin:0}
+.eyebrow{font:500 11px var(--f-sans);letter-spacing:.28em;text-transform:uppercase;color:var(--gold-ink)}
+.btn{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--emerald-deep);border-radius:999px;padding:13px 26px;font:500 12px var(--f-sans);letter-spacing:.16em;text-transform:uppercase;background:var(--emerald-deep);color:var(--surface);text-decoration:none;transition:background .3s}
+.btn:hover{background:var(--emerald)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--gold)}
+
+/* nav */
+.nav{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:50;background:rgba(247,243,236,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav .in{height:var(--nav);max-width:1320px;margin:0 auto;padding-left:var(--gl);padding-right:var(--gr);display:flex;align-items:center;gap:24px}
+.logo{font:500 14px var(--f-sans);letter-spacing:.34em;text-transform:uppercase;text-decoration:none}
+.nav nav{margin-left:auto;display:flex;gap:6px}
+.nav nav a{font:400 12.5px var(--f-sans);letter-spacing:.16em;text-transform:uppercase;color:var(--body);text-decoration:none;padding:8px 12px}
+.nav nav a[aria-current]{color:var(--ink);box-shadow:inset 0 -1px 0 var(--gold)}
+.nav .btn{padding:10px 20px;font-size:11px}
+.bar{position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:0 50%}
+@media (max-width:820px){.nav nav{display:none}.nav .btn{margin-left:auto}}
+
+/* ---------- entrance: gilded doors ---------- */
+.entrance{position:relative;height:100vh;height:100svh;overflow:hidden;background:radial-gradient(70% 60% at 50% 45%,#FFFDF8,var(--wall2))}
+.foyer{position:absolute;inset:var(--top) 0 0;display:grid;place-items:center;text-align:center;padding-left:var(--gl);padding-right:var(--gr)}
+.foyer .inner{display:grid;gap:18px;justify-items:center}
+.foyer h1{font-size:clamp(60px,11vw,170px);line-height:.9}
+.foyer p{color:var(--body);max-width:44ch;font-size:clamp(16px,1.4vw,19px)}
+.doors{position:absolute;inset:var(--top) 0 0;display:grid;grid-template-columns:1fr 1fr;z-index:5;perspective:1800px}
+.door{position:relative;background:linear-gradient(180deg,#F6EFE2,#E9DEC9);border:1px solid var(--line2);display:grid;place-items:center;overflow:hidden}
+.door.l{transform-origin:0 50%;border-right:0}
+.door.r{transform-origin:100% 50%;border-left:0}
+.door::before{content:"";position:absolute;inset:6% 9%;border:1px solid var(--gilt);box-shadow:inset 0 0 0 10px transparent,inset 0 0 0 11px rgba(201,168,106,.5)}
+.door::after{content:"";position:absolute;top:50%;width:10px;height:90px;margin-top:-45px;border-radius:6px;background:linear-gradient(90deg,#B08D57,#E9D3A3,#B08D57)}
+.door.l::after{right:6%} .door.r::after{left:6%}
+.door .half{font:500 clamp(40px,7vw,110px)/1 var(--f-display);color:var(--ink);position:relative;z-index:1;white-space:nowrap}
+.door.l .half{justify-self:end;margin-right:-1px}
+.door.r .half{justify-self:start}
+.door .half em{font-style:italic;color:var(--gold-ink)}
+.door small{position:absolute;bottom:12%;font:500 11px var(--f-sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gold-ink)}
+.door.l small{right:14%} .door.r small{left:14%}
+.cue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:6;font:500 10.5px var(--f-sans);letter-spacing:.3em;text-transform:uppercase;color:var(--muted);display:grid;justify-items:center;gap:8px}
+.cue i{width:1px;height:34px;background:linear-gradient(var(--gold),transparent)}
+
+/* ---------- the hall ---------- */
+.hall{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--wall)}
+.hall .ceiling{position:absolute;left:0;right:0;top:var(--top);height:10px;background:linear-gradient(var(--wall2),transparent)}
+.track{position:absolute;top:var(--top);bottom:0;left:0;display:flex;height:calc(100% - var(--top));will-change:transform}
+.wainscot{position:absolute;left:0;right:0;bottom:24%;height:1px;background:var(--line2)}
+.floor{position:absolute;left:0;right:0;bottom:0;height:24%;background:linear-gradient(180deg,#E9DFCD,var(--floor));border-top:1px solid var(--line2)}
+.floor::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 238px,rgba(140,107,55,.12) 238px 240px);opacity:.8}
+.floor::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 40%)}
+.room{position:relative;flex:none;width:100vw;height:100%;display:grid;place-items:center;padding:4vh var(--gr) 26% var(--gl)}
+.room.wide{width:130vw}
+.room.q,.room.t{padding-top:150px}
+.roomno{position:absolute;top:22px;left:var(--gl);font:500 11px var(--f-sans);letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.beam{position:absolute;top:0;left:50%;width:min(56vw,620px);height:78%;transform:translateX(-50%);pointer-events:none;opacity:.25;
+  background:linear-gradient(180deg,rgba(255,240,205,.95),rgba(255,240,205,0) 88%);clip-path:polygon(43% 0,57% 0,100% 100%,0 100%);filter:blur(6px)}
+.lamp{position:absolute;top:0;left:50%;width:70px;height:12px;margin-left:-35px;border-radius:0 0 40px 40px;background:linear-gradient(90deg,#B08D57,#E9D3A3,#B08D57)}
+.exhibit{position:relative;display:grid;grid-template-columns:auto 270px;gap:44px;align-items:center;z-index:1}
+.frame{position:relative;padding:22px;background:linear-gradient(135deg,#D8BC85,#B08D57 30%,#EBD7A9 55%,#A9864F 80%,#D8BC85);box-shadow:0 30px 50px -28px rgba(80,58,24,.55),0 2px 0 rgba(255,255,255,.5) inset}
+.mat{background:var(--surface);padding:clamp(18px,2.4vw,34px);box-shadow:inset 0 0 0 1px var(--line2)}
+.art{width:clamp(260px,30vw,460px);aspect-ratio:4/3;position:relative;overflow:hidden;background:var(--wall)}
+.label{background:var(--surface);border:1px solid var(--line2);padding:22px 24px;display:grid;gap:10px;box-shadow:0 18px 30px -24px rgba(80,58,24,.5)}
+.label .no{font:500 10.5px var(--f-sans);letter-spacing:.26em;text-transform:uppercase;color:var(--gold-ink)}
+.label h3{font-size:34px}
+.label .meta{font:400 13px var(--f-sans);color:var(--muted);font-style:italic}
+.label p{font-size:14.5px;color:var(--body);line-height:1.6}
+.label .tags{display:flex;flex-wrap:wrap;gap:5px}
+.label .tags span{font:400 11px var(--f-sans);letter-spacing:.06em;border:1px solid var(--line2);border-radius:999px;padding:2px 10px;color:var(--body)}
+.label a{font:500 11px var(--f-sans);letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--gold);justify-self:start;padding-bottom:2px}
+.plinthshadow{position:absolute;left:10%;right:10%;bottom:-40px;height:30px;background:radial-gradient(50% 50% at 50% 50%,rgba(80,58,24,.28),transparent 70%)}
+
+/* artworks drawn in CSS */
+.a-erp{background:linear-gradient(#FFFCF7,#F3EDE2);padding:7%;display:grid;grid-template-rows:auto 1fr auto;gap:6%}
+.a-erp .k{display:grid;grid-template-columns:repeat(3,1fr);gap:5%}
+.a-erp .k i{height:34px;border:1px solid var(--line2);background:var(--surface);position:relative}
+.a-erp .k i::after{content:"";position:absolute;left:12%;bottom:22%;width:46%;height:4px;background:var(--gold)}
+.a-erp .b{display:flex;align-items:flex-end;gap:4%;border-bottom:1px solid var(--line2)}
+.a-erp .b i{flex:1;background:var(--emerald);transform-origin:50% 100%}
+.a-erp .b i:nth-child(3n){background:var(--gold)}
+.a-erp .r{height:8px;background:repeating-linear-gradient(90deg,var(--line2) 0 30%,transparent 30% 35%)}
+.a-acc{background:var(--surface);padding:8% 12%;display:grid;gap:7px;align-content:start}
+.a-acc b{font:500 22px var(--f-display);color:var(--ink);border-bottom:1px solid var(--gold);padding-bottom:6px}
+.a-acc i{display:grid;grid-template-columns:1fr 30%;gap:8px;height:10px}
+.a-acc i::before{content:"";background:var(--line)}.a-acc i::after{content:"";background:var(--gold-soft)}
+.a-acc .tot{margin-top:6px;height:16px;background:linear-gradient(90deg,transparent 60%,var(--emerald) 60%)}
+.a-cal{background:var(--surface);padding:7%;display:grid;grid-template-columns:repeat(7,1fr);gap:5px;align-content:start}
+.a-cal b{grid-column:1/-1;font:500 22px var(--f-display);color:var(--ink);margin-bottom:4px}
+.a-cal i{aspect-ratio:1;border:1px solid var(--line)}
+.a-cal i.on{background:var(--emerald)}.a-cal i.g{background:var(--gold-soft);border-color:var(--gold)}
+.a-poster{background:var(--emerald-deep);display:grid;place-items:center;text-align:center;color:#E9D3A3}
+.a-poster span{font:italic 500 clamp(40px,5vw,78px)/.9 var(--f-display)}
+.a-poster small{display:block;font:500 10px var(--f-sans);letter-spacing:.3em;margin-top:10px;color:#C9D6CE}
+.a-portrait{background:linear-gradient(160deg,var(--surface),var(--gold-soft));display:grid;place-items:center}
+.a-portrait span{font:italic 500 clamp(90px,10vw,160px)/1 var(--f-display);color:var(--gold)}
+.a-portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* room: disciplines as four small framed plaques */
+.quartet{display:grid;grid-template-columns:repeat(4,minmax(0,220px));gap:28px;z-index:1}
+.plaque{background:var(--surface);border:1px solid var(--line2);padding:26px 22px;display:grid;gap:10px;box-shadow:0 22px 34px -26px rgba(80,58,24,.55);position:relative}
+.plaque::before{content:"";position:absolute;inset:6px;border:1px solid var(--gold-soft);pointer-events:none}
+.plaque .n{font:500 10.5px var(--f-sans);letter-spacing:.26em;color:var(--gold-ink)}
+.plaque h3{font-size:28px}
+.plaque p{font-size:14.5px;color:var(--body);line-height:1.6}
+.roomtitle{position:absolute;top:58px;left:50%;transform:translateX(-50%);text-align:center;display:grid;gap:6px;z-index:1;width:min(90%,800px)}
+.roomtitle h2{font-size:clamp(34px,3.6vw,54px)}
+
+/* timeline: engraved brass plaques on a rail */
+.rail{display:grid;grid-template-columns:repeat(4,minmax(0,250px));gap:34px;position:relative;z-index:1}
+.rail::before{content:"";position:absolute;left:-40px;right:-40px;top:-26px;height:2px;background:linear-gradient(90deg,transparent,var(--gilt),transparent)}
+.brass{padding:26px 22px;background:linear-gradient(135deg,#E8D3A6,#C9A86A 45%,#F0DFB8 60%,#B9975C);display:grid;gap:8px;box-shadow:0 22px 34px -24px rgba(80,58,24,.6),inset 0 1px 0 rgba(255,255,255,.6);color:#3B2E17}
+.brass .y{font:500 52px/1 var(--f-display);text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.brass .t{font:500 10.5px var(--f-sans);letter-spacing:.26em;text-transform:uppercase;opacity:.75}
+.brass h3{font-size:26px;color:#3B2E17}
+.brass p{font-size:14px;line-height:1.55;color:#4F3F22}
+.brass.now{outline:1px solid var(--emerald);outline-offset:6px}
+
+/* visitor book */
+.book{display:grid;grid-template-columns:1fr 1fr;width:min(900px,80vw);background:var(--surface);box-shadow:0 34px 60px -30px rgba(80,58,24,.6);position:relative;z-index:1;border:1px solid var(--line2)}
+.book::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:30px;margin-left:-15px;background:linear-gradient(90deg,transparent,rgba(140,107,55,.18),transparent)}
+.page{padding:38px 40px;display:grid;gap:26px;align-content:start;background:repeating-linear-gradient(180deg,transparent 0 33px,rgba(176,141,87,.15) 33px 34px)}
+.note blockquote{margin:0;font:italic 500 21px/1.45 var(--f-display);color:var(--ink)}
+.note figcaption{margin-top:8px;font:500 10.5px var(--f-sans);letter-spacing:.22em;text-transform:uppercase;color:var(--gold-ink)}
+.note{margin:0}
+
+/* reception */
+.desk{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center;width:min(1060px,86vw);z-index:1}
+.desk h2{font-size:clamp(46px,5.6vw,86px)}
+.desk p{color:var(--body);margin:18px 0 26px;max-width:40ch}
+.card{background:var(--emerald-deep);color:var(--surface);padding:36px 36px 30px;box-shadow:0 34px 60px -28px rgba(31,77,57,.7);transform-style:preserve-3d;position:relative}
+.card::before{content:"";position:absolute;inset:10px;border:1px solid rgba(217,192,143,.45);pointer-events:none}
+.card .w{font:500 13px var(--f-sans);letter-spacing:.4em;color:#D9C08F}
+.card .n{font:500 40px/1.05 var(--f-display);margin:22px 0 4px}
+.card .r{font:400 12px var(--f-sans);letter-spacing:.16em;text-transform:uppercase;color:#C9D6CE}
+.card dl{margin:24px 0 0;display:grid;gap:10px}
+.card dl div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;font-size:15px}
+.card dt{font:500 10px var(--f-sans);letter-spacing:.22em;text-transform:uppercase;color:#D9C08F;padding-top:5px}
+.card dd{margin:0;overflow-wrap:anywhere}
+.card a{text-decoration:none;border-bottom:1px solid rgba(217,192,143,.5)}
+
+.plan{position:fixed;left:var(--gl);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:14px;background:rgba(255,252,247,.9);border:1px solid var(--line2);padding:10px 16px;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .4s}
+.plan.on{opacity:1}
+.plan b{font:500 10.5px var(--f-sans);letter-spacing:.24em;text-transform:uppercase;color:var(--gold-ink);white-space:nowrap}
+.plan .dots{display:flex;gap:6px}
+.plan .dots i{width:16px;height:2px;background:var(--line2)}
+.plan .dots i.on{background:var(--gold)}
+.plan span{font:400 13px var(--f-sans);color:var(--ink);white-space:nowrap}
+.foot{border-top:1px solid var(--line);background:var(--bg)}
+.foot .in{max-width:1320px;margin:0 auto;padding:26px var(--gr) calc(26px + env(safe-area-inset-bottom,0px)) var(--gl);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font:400 11.5px var(--f-sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* phones & no-motion: the hall becomes a vertical walk */
+@media (max-width:900px){
+  .hall{height:auto;overflow:visible;overflow-x:clip}
+  .entrance{overflow-x:clip}
+  .track{position:relative;top:0;flex-direction:column;height:auto;padding-top:var(--top)}
+  .room,.room.wide{width:100%;height:auto;min-height:0;padding:70px var(--gr) 70px var(--gl)}
+  .floor,.wainscot,.hall .ceiling{display:none}
+  .exhibit{grid-template-columns:1fr;gap:26px;justify-items:center}
+  .label{width:100%}
+  .art{width:min(78vw,420px)}
+  .frame{padding:14px}
+  .quartet,.rail{grid-template-columns:1fr 1fr;gap:16px}
+  .roomtitle{position:relative;top:auto;left:auto;transform:none;margin:0 auto 26px}
+  .room.q,.room.t{display:block}
+  .book{grid-template-columns:1fr;width:100%}
+  .book::after{display:none}
+  .page{padding:26px}
+  .desk{grid-template-columns:1fr;width:100%;gap:30px}
+  .beam{opacity:.5}
+  .plan{display:none}
+  .door .half{font-size:clamp(30px,10vw,52px)}
+}
+@media (max-width:900px){.rail::before{display:none}.door small{display:none}}
+@media (max-width:520px){.quartet,.rail{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a class="logo" href="index.html">Frogineer</a>
+    <nav aria-label="Pages"><a href="index.html">Home</a><a href="profile.html" aria-current="page">Profile</a><a href="#reception">Contact</a></nav>
+    <a class="btn" href="#reception">Book a call</a>
+  </div>
+  <div class="bar" id="bar"></div>
+</header>
+
+<main>
+  <!-- ENTRANCE -->
+  <section class="entrance" id="entrance" aria-label="Entrance">
+    <div class="foyer">
+      <div class="inner" id="foyer">
+        <span class="eyebrow">The private gallery of</span>
+        <h1>Jaxon <em>Tan</em></h1>
+        <p>Hybrid technologist behind Frogineer. Software, cloud and NAS infrastructure, and AI agents, shown as a walk through the work.</p>
+      </div>
+    </div>
+    <div class="doors" aria-hidden="true">
+      <div class="door l" id="doorL"><span class="half">Jaxon&nbsp;</span><small>Est. 2023</small></div>
+      <div class="door r" id="doorR"><span class="half"><em>Tan</em></span><small>Singapore</small></div>
+    </div>
+    <div class="cue" id="cue"><i></i>Scroll to enter</div>
+  </section>
+
+  <!-- THE HALL -->
+  <section class="hall" id="hall" aria-label="Gallery hall">
+    <div class="track" id="track">
+      <div class="ceiling"></div>
+
+      <div class="room" data-name="The portrait">
+        <span class="roomno">Room I · The portrait</span><span class="lamp"></span><span class="beam"></span>
+        <div class="exhibit">
+          <div class="frame"><div class="mat"><div class="art a-portrait"><span>JT</span><!-- your photo: <img src="jaxon.jpg" alt="Jaxon Tan"> --></div></div><span class="plinthshadow"></span></div>
+          <div class="label">
+            <span class="no">No. 01 · Self-portrait</span>
+            <h3>Jaxon <em>Tan</em></h3>
+            <span class="meta">Singapore, b. Infocomm &amp; Media Engineering</span>
+            <p>Studying Software &amp; Application at Nanyang Polytechnic. Intern at Miracle Sea PTE LTD (Miracle Finland Oy), engineering enterprise data pipelines. Serving National Service in 2026.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="room wide q" data-name="Disciplines">
+        <span class="roomno">Room II · Disciplines</span><span class="lamp"></span><span class="beam" style="width:min(90vw,1100px)"></span>
+        <div class="roomtitle"><span class="eyebrow">Four practices</span><h2>Discipline &amp; <em>craft</em></h2></div>
+        <div class="quartet">
+          <article class="plaque"><span class="n">I · Fullstack</span><h3>Cross development</h3><p>React, Next.js, Node.js, C#, Python, SQL, REST APIs and cross-platform systems.</p></article>
+          <article class="plaque"><span class="n">II · Design</span><h3>UI/UX &amp; spatial</h3><p>Interface ergonomics shaped by an interior designer's sense of space and restraint.</p></article>
+          <article class="plaque"><span class="n">III · Infrastructure</span><h3>Cloud &amp; NAS</h3><p>Docker, self-hosted NAS environments, virtualisation and resilient networks.</p></article>
+          <article class="plaque"><span class="n">IV · Intelligence</span><h3>AI &amp; agents</h3><p>Autonomous agents, Model Context Protocol (MCP) and enterprise LLM workflows.</p></article>
+        </div>
+      </div>
+
+      <div class="room" data-name="Horizon-ERP">
+        <span class="roomno">Room III · Client commission</span><span class="lamp"></span><span class="beam"></span>
+        <div class="exhibit">
+          <div class="frame"><div class="mat"><div class="art a-erp"><div class="k"><i></i><i></i><i></i></div><div class="b"><i style="height:40%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:80%"></i><i style="height:66%"></i><i style="height:92%"></i><i style="height:74%"></i></div><div class="r"></div></div></div><span class="plinthshadow"></span></div>
+          <div class="label">
+            <span class="no">No. 02 · Commission for Espresgo</span>
+            <h3>Horizon-<em>ERP</em></h3>
+            <span class="meta">Enterprise resource planning, PostgreSQL</span>
+            <p>Bespoke ERP that automates inventory, procurement, order dispatch and financial logistics.</p>
+            <div class="tags"><span>ERP architecture</span><span>PostgreSQL</span><span>Cloud logistics</span><span>Docker</span></div>
+            <a href="https://espresgo.com" target="_blank" rel="noopener">Visit espresgo.com ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="room" data-name="Horizontal-Accounting">
+        <span class="roomno">Room IV · Client commission</span><span class="lamp"></span><span class="beam"></span>
+        <div class="exhibit">
+          <div class="frame"><div class="mat"><div class="art a-acc"><b>Tax invoice</b><i></i><i></i><i></i><i></i><i></i><i></i><div class="tot"></div></div></div><span class="plinthshadow"></span></div>
+          <div class="label">
+            <span class="no">No. 03 · Commission for SGWoodworks</span>
+            <h3>Horizontal-<em>Accounting</em></h3>
+            <span class="meta">Job costing system, C# / .NET</span>
+            <p>Managerial accounting with bill-of-materials pricing, tax invoices, progressive payments and audit trails.</p>
+            <div class="tags"><span>C# / .NET</span><span>Job costing</span><span>BOM engine</span><span>Financial sync</span></div>
+            <a href="https://tanyuejun.juxtechnologies.net" target="_blank" rel="noopener">Read the case study ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="room" data-name="School Club System">
+        <span class="roomno">Room V · Academic collection</span><span class="lamp"></span><span class="beam"></span>
+        <div class="exhibit">
+          <div class="frame"><div class="mat"><div class="art a-cal" id="cal"><b>Club calendar</b></div></div><span class="plinthshadow"></span></div>
+          <div class="label">
+            <span class="no">No. 04 · Academic work</span>
+            <h3>School Club <em>System</em></h3>
+            <span class="meta">Desktop software, C# WinForms, 3NF SQL</span>
+            <p>Institutional administration with a normalised relational database, event scheduling and attendance tracking.</p>
+            <div class="tags"><span>C# WinForms</span><span>3NF SQL</span><span>Visual Studio</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="room" data-name="Digital Media Design">
+        <span class="roomno">Room VI · Award winner</span><span class="lamp"></span><span class="beam"></span>
+        <div class="exhibit">
+          <div class="frame"><div class="mat"><div class="art a-poster"><div><span>Restraint</span><small>Best Digital Media Design</small></div></div></div><span class="plinthshadow"></span></div>
+          <div class="label">
+            <span class="no">No. 05 · Awarded</span>
+            <h3>Digital Media <em>Design</em></h3>
+            <span class="meta">UI/UX and brand identity suite</span>
+            <p>Awarded “Best Digital Media Design” for artistic restraint, typographic hierarchy and ergonomic layout.</p>
+            <div class="tags"><span>UI/UX</span><span>Adobe Creative Suite</span><span>Brand identity</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="room wide t" data-name="The timeline">
+        <span class="roomno">Room VII · The timeline</span><span class="lamp"></span><span class="beam" style="width:min(90vw,1100px)"></span>
+        <div class="roomtitle"><span class="eyebrow">Engraved in brass</span><h2>The <em>journey</em></h2></div>
+        <div class="rail">
+          <article class="brass"><span class="y">2023</span><span class="t">Academic core</span><h3>NYP enrolment</h3><p>2D design, web design and development, networking and IoT.</p></article>
+          <article class="brass"><span class="y">2024</span><span class="t">Specialisation</span><h3>Software specialist</h3><p>Software architecture, fullstack, cloud computing and desktop systems.</p></article>
+          <article class="brass"><span class="y">2025</span><span class="t">Industry</span><h3>Miracle Sea intern</h3><p>Enterprise data with Miracle Finland Oy, leading the final-year AI project.</p></article>
+          <article class="brass now"><span class="y">2026</span><span class="t">Current</span><h3>National Service</h3><p>Serving as a proud Singaporean, with leadership and duty.</p></article>
+        </div>
+      </div>
+
+      <div class="room" data-name="Visitor book">
+        <span class="roomno">Room VIII · Visitor book</span><span class="lamp"></span><span class="beam"></span>
+        <div class="book">
+          <div class="page">
+            <figure class="note"><blockquote>“Jaxon is a fast learner and adapts to new environments remarkably well. His ability to quickly pick up new concepts makes him a valuable team member.”</blockquote><figcaption>Manager · Remnants Holdings, 2024</figcaption></figure>
+          </div>
+          <div class="page">
+            <figure class="note"><blockquote>“He's helpful and easy to work with. Good at figuring things out and has a positive attitude.”</blockquote><figcaption>Andre Quek · Internship mentor, 2023</figcaption></figure>
+            <figure class="note"><blockquote>“Really dependable. If Jaxon says he'll do something, you can count on it getting done.”</blockquote><figcaption>Wei Ling · Teammate, 2025</figcaption></figure>
+          </div>
+        </div>
+      </div>
+
+      <div class="room" id="reception" data-name="Reception">
+        <span class="roomno">Reception</span><span class="lamp"></span><span class="beam"></span>
+        <div class="desk">
+          <div>
+            <span class="eyebrow">Thank you for visiting</span>
+            <h2 style="margin-top:14px">Let's begin a <em>dialogue.</em></h2>
+            <p>Available for enterprise consulting, software engineering and technical architecture conversations.</p>
+            <a class="btn" href="mailto:yjtanyuejun@outlook.com">Write to me</a>
+          </div>
+          <div class="card" id="card">
+            <div class="w">FROGINEER</div>
+            <div class="n">Jaxon Tan</div>
+            <div class="r">Hybrid technologist · Singapore</div>
+            <dl>
+              <div><dt>Email</dt><dd><a href="mailto:yjtanyuejun@outlook.com">yjtanyuejun@outlook.com</a></dd></div>
+              <div><dt>Phone</dt><dd>+65 8833 6542</dd></div>
+              <div><dt>LinkedIn</dt><dd><a href="https://linkedin.com/in/jaxon-tan" target="_blank" rel="noopener">linkedin.com/in/jaxon-tan</a></dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="wainscot"></div>
+      <div class="floor"></div>
+    </div>
+  </section>
+</main>
+
+<div class="plan" id="plan" aria-hidden="true"><b id="planNo">Room I</b><div class="dots" id="dots"></div><span id="planName">The portrait</span></div>
+<footer class="foot"><div class="in"><span>© 2026 Frogineer · Jaxon Tan</span><span>Proudly Singaporean</span></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)];
+// calendar artwork cells
+$("#cal").insertAdjacentHTML("beforeend",Array.from({length:28},(_,i)=>`<i class="${[3,8,10,15,17,22,24].includes(i)?"on":[12,26].includes(i)?"g":""}"></i>`).join(""));
+const rooms=$$(".room"), ROMAN=["I","II","III","IV","V","VI","VII","VIII","—"];
+$("#dots").innerHTML=rooms.map(()=>"<i></i>").join("");
+
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(window.gsap&&window.ScrollTrigger&&!reduce){
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.to("#bar",{scaleX:1,ease:"none",scrollTrigger:{start:0,end:"max",scrub:.3}});
+  const mm=gsap.matchMedia();
+
+  mm.add("(min-width: 901px)",()=>{
+    // 1) the doors swing open
+    gsap.timeline({scrollTrigger:{trigger:"#entrance",start:"top top",end:"+=120%",pin:true,scrub:.8}})
+      .to("#cue",{autoAlpha:0,duration:.1},0)
+      .to("#doorL",{rotationY:-78,xPercent:-12,duration:1,ease:"power2.inOut"},0)
+      .to("#doorR",{rotationY:78,xPercent:12,duration:1,ease:"power2.inOut"},0)
+      .fromTo("#foyer",{scale:.86,autoAlpha:0},{scale:1,autoAlpha:1,duration:.7},.35)
+      .to("#foyer",{scale:1.08,autoAlpha:0,duration:.4},1.05);
+    // 2) walking the hall sideways
+    const track=$("#track"), dist=()=>track.scrollWidth-innerWidth;
+    const walk=gsap.to(track,{x:()=>-dist(),ease:"none",scrollTrigger:{trigger:"#hall",start:"top top",end:()=>"+="+dist(),pin:true,scrub:1,invalidateOnRefresh:true,
+      snap:{snapTo:v=>gsap.utils.snap(rooms.map(r=>Math.min(1,Math.max(0,(r.offsetLeft+r.offsetWidth/2-innerWidth/2)/dist()))))(v),duration:{min:.3,max:.9},delay:.12,inertia:false},
+      onToggle:s=>$("#plan").classList.toggle("on",s.isActive),
+      onUpdate:s=>{const cx=s.progress*dist()+innerWidth/2;let idx=0;rooms.forEach((r,i)=>{if(cx>=r.offsetLeft)idx=i});
+        $("#planNo").textContent=idx===rooms.length-1?"Reception":"Room "+ROMAN[idx]; $("#planName").textContent=rooms[idx].dataset.name;
+        $$("#dots i").forEach((d,i)=>d.classList.toggle("on",i<=idx))}}});
+    // 3) each room comes alive as it reaches the centre
+    rooms.forEach(room=>{
+      const st={trigger:room,containerAnimation:walk,start:"left 85%",end:"center 55%",scrub:.6};
+      gsap.fromTo($(".beam",room),{opacity:.12},{opacity:1,ease:"none",scrollTrigger:{trigger:room,containerAnimation:walk,start:"left 70%",end:"center center",scrub:true}});
+      gsap.to($(".beam",room),{opacity:.12,ease:"none",scrollTrigger:{trigger:room,containerAnimation:walk,start:"center center",end:"right 30%",scrub:true}});
+      const fr=$(".frame",room); if(fr) gsap.fromTo(fr,{y:70,rotationY:22,transformPerspective:1200,opacity:.2},{y:0,rotationY:0,opacity:1,ease:"power2.out",scrollTrigger:st});
+      const lb=$(".label",room); if(lb) gsap.fromTo(lb,{x:80,opacity:0,clipPath:"inset(0 0 100% 0)"},{x:0,opacity:1,clipPath:"inset(0 0 0% 0)",ease:"power2.out",scrollTrigger:{...st,start:"left 70%"}});
+      const pl=$$(".plaque,.brass",room); if(pl.length) gsap.fromTo(pl,{y:90,opacity:0,rotationX:-25,transformPerspective:900},{y:0,opacity:1,rotationX:0,stagger:.12,ease:"power2.out",scrollTrigger:{...st,start:"left 80%",end:"center 50%"}});
+      const tt=$(".roomtitle",room); if(tt) gsap.fromTo(tt,{y:-30,opacity:0},{y:0,opacity:1,scrollTrigger:{...st,start:"left 75%"}});
+      const bk=$(".book",room); if(bk) gsap.fromTo(bk,{rotationY:-55,transformPerspective:1400,transformOrigin:"0% 50%",opacity:.3},{rotationY:0,opacity:1,ease:"power2.out",scrollTrigger:st});
+      const notes=$$(".note",room); if(notes.length) gsap.fromTo(notes,{opacity:0,y:20},{opacity:1,y:0,stagger:.2,scrollTrigger:{...st,start:"left 55%",end:"center 45%"}});
+      const cd=$("#card",room); if(cd) gsap.fromTo(cd,{rotationY:180,transformPerspective:1400,opacity:0},{rotationY:0,opacity:1,ease:"power2.out",scrollTrigger:st});
+      const bars=$$(".a-erp .b i",room); if(bars.length) gsap.fromTo(bars,{scaleY:0},{scaleY:1,stagger:.05,scrollTrigger:{...st,start:"left 60%"}});
+    });
+  });
+
+  mm.add("(max-width: 900px)",()=>{
+    gsap.timeline({scrollTrigger:{trigger:"#entrance",start:"top top",end:"+=90%",pin:true,scrub:.8}})
+      .to("#cue",{autoAlpha:0,duration:.1},0)
+      .to("#doorL",{xPercent:-100,duration:1,ease:"power2.inOut"},0)
+      .to("#doorR",{xPercent:100,duration:1,ease:"power2.inOut"},0)
+      .fromTo("#foyer",{scale:.9,autoAlpha:0},{scale:1,autoAlpha:1,duration:.6},.3);
+    $$(".frame,.label,.plaque,.brass,.book,.card,.roomtitle").forEach(el=>gsap.from(el,{y:50,opacity:0,duration:.9,ease:"power3.out",scrollTrigger:{trigger:el,start:"top 88%",once:true}}));
+  });
+}
+</script>
+
+</body>
+</html>
