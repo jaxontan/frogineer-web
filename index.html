@@ -343,7 +343,7 @@ p { margin: 0; }
   pointer-events: none;
 }
 .center * { pointer-events: none; }
-.center .device, .center .device *, .center .steps button { pointer-events: auto; }
+.center .device, .center .device * { pointer-events: auto; }
 
 .caps {
   display: grid;
@@ -432,39 +432,7 @@ p { margin: 0; }
   pointer-events: none;
 }
 
-/* Chapter step jump pills */
-.steps {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  justify-content: center;
-  position: relative;
-  z-index: 2;
-  margin-top: 8px;
-}
-.steps button {
-  all: unset;
-  cursor: pointer;
-  font: 700 11.5px var(--f-code);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 5px 12px;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  background: var(--paper);
-  box-shadow: 2px 2px 0 var(--ink);
-  transition: transform .1s, box-shadow .1s, background .2s, color .2s;
-}
-.steps button:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--ink);
-  color: var(--ink);
-}
-.steps button.on {
-  background: var(--yellow);
-  color: var(--ink);
-}
+
 
 /* ==========================================================================
    THE 3D COMPUTER: RETRO NEO-BRUTALIST STYLING
@@ -1902,16 +1870,7 @@ dialog .x {
           </div>
         </div>
 
-        <!-- Jump to chapters -->
-        <div class="steps" id="steps" aria-label="Jump to a story chapter">
-          <button data-go="1">1 · Problem</button>
-          <button data-go="2">2 · Storage</button>
-          <button data-go="3">3 · AI</button>
-          <button data-go="4">4 · Cloud</button>
-          <button data-go="5">5 · Interfaces</button>
-          <button data-go="6">6 · Work</button>
-          <button class="btn y" id="stageZoomBtn" style="padding:4px 10px;font-size:12px;margin-left:6px">⚡ Zoom In</button>
-        </div>
+
       </div>
     </div>
   </section>
@@ -2858,7 +2817,6 @@ $("#screen").addEventListener("click", e => {
   if (!isZoomed) zoomIn();
 });
 $("#heroZoomBtn").addEventListener("click", zoomIn);
-$("#stageZoomBtn").addEventListener("click", zoomIn);
 $("#navLaunchOs").addEventListener("click", e => {
   e.preventDefault();
   const r = screenEl.getBoundingClientRect();
@@ -2884,7 +2842,7 @@ document.addEventListener("keydown", e => {
 gsap.registerPlugin(ScrollTrigger);
 
 const stageEl = $("#stage"), deviceEl = $("#device"), slotEl = $("#slot"), lidEl = $("#lid"), laptopEl = $("#laptop");
-const capsEls = $$(".cap"), stepBtns = $$("#steps button[data-go]");
+const capsEls = $$(".cap");
 const glowEl = $("#glow");
 
 function getPos(el) {
@@ -2914,7 +2872,6 @@ const heroS = () => {
 const GLOW_COLORS = ["#2E9E57","#E6A524","#2E9E57","#F5C430","#2B57E6","#F3A9C4","#2E9E57"];
 
 gsap.set(capsEls, { autoAlpha: 0 });
-gsap.set("#steps", { autoAlpha: 0 });
 gsap.set(deviceEl, { transformOrigin: "50% 50%" });
 
 // On load: lid swings open smoothly
@@ -2944,8 +2901,7 @@ const stops = [0], starts = [0];
 tl.to("#heroCopy", { x: -80, autoAlpha: 0, duration: .5 }, 0)
   .to("#cue", { autoAlpha: 0, duration: .2 }, 0)
   .fromTo(deviceEl, { x: heroX, y: heroY, scale: heroS }, { x: 0, y: 0, scale: 1, duration: 1, ease: "power3.inOut", immediateRender: true }, 0)
-  .fromTo(laptopEl, { rotationY: -26, rotationX: -20 }, { rotationY: 0, rotationX: -5, duration: 1, ease: "power3.inOut", immediateRender: true }, 0)
-  .to("#steps", { autoAlpha: 1, duration: .3 }, .8);
+  .fromTo(laptopEl, { rotationY: -26, rotationX: -20 }, { rotationY: 0, rotationX: -5, duration: 1, ease: "power3.inOut", immediateRender: true }, 0);
 
 // Steps 1 to 6 (Chapters)
 const CH = capsEls.length;
@@ -2995,7 +2951,6 @@ let curChap = -1;
 function setActiveChapter(i) {
   if (i === curChap) return;
   curChap = i;
-  stepBtns.forEach(b => b.classList.toggle("on", +b.dataset.go === i));
 }
 setActiveChapter(0);
 
@@ -3004,13 +2959,6 @@ function scrollToChapter(i) {
   window.scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
 }
 
-document.addEventListener("click", e => {
-  const b = e.target.closest("[data-go]");
-  if (b) {
-    e.preventDefault();
-    scrollToChapter(+b.dataset.go);
-  }
-});
 $("#heroStoryBtn").onclick = () => scrollToChapter(1);
 $("#navLogo").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
