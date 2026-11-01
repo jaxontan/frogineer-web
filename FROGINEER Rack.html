@@ -97,25 +97,54 @@ main{position:relative;z-index:2}
 .btn .ar{width:30px;height:30px;border-radius:50%;background:#0a0c08;color:var(--ac);display:grid;place-items:center}
 .ct .mail{font-size:clamp(20px,2.4vw,38px);letter-spacing:-.02em;border-bottom:1px solid var(--ln);padding-bottom:6px}
 .ft{display:flex;justify-content:space-between;color:var(--mut);margin-top:10vh;gap:20px;flex-wrap:wrap}
-.wmx{font-size:clamp(60px,17.5vw,330px);font-weight:800;letter-spacing:-.05em;line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(239,237,230,.3);white-space:nowrap;margin:6vh 0 -2vh -.03em;user-select:none}
+.wmx{display:block;width:100%;height:clamp(90px,17vw,320px);margin:6vh 0 -2vh;cursor:crosshair}
+.ch h2 i{color:var(--ac)}.ch li{transition:color .3s}.ch li:hover{color:var(--ac)}
+/* light theme */
+html[data-theme=light]{--bg:#e9e6df;--fg:#1d1f1c;--mut:rgba(29,31,28,.6);--ln:rgba(29,31,28,.16);--ac:#2f8a3a}
+[data-theme=light] .vig{background:radial-gradient(ellipse at 62% 52%,transparent 45%,rgba(120,110,95,.28) 100%)}[data-theme=light] .vig::after{opacity:.06}
+[data-theme=light] .mq span.o{-webkit-text-stroke-color:rgba(29,31,28,.45)}[data-theme=light] .pc .num{-webkit-text-stroke-color:rgba(29,31,28,.4)}
+[data-theme=light] .mode{background:rgba(233,230,223,.75)}[data-theme=light] .grid>div:hover{background:rgba(47,138,58,.07)}
+[data-theme=light] .btn{color:#f4f2ec}[data-theme=light] .btn .ar{background:#f4f2ec}[data-theme=light] .pre .bar{background:rgba(0,0,0,.08)}
+/* laptop dive -> interactive OS */
+.osfl{position:fixed;inset:0;z-index:1;background:#171614;opacity:0;pointer-events:none}
+.os{position:fixed;inset:0;z-index:250;background:#171614;opacity:0;visibility:hidden;transition:opacity .6s,visibility .6s}
+.os.on{opacity:1;visibility:visible}
+.os iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.osbar{position:absolute;right:16px;top:56px;display:flex;gap:8px;z-index:2}
+.osbar button{all:unset;cursor:pointer;padding:9px 14px;border-radius:99px;background:rgba(23,22,20,.82);color:#f4e9c8;border:1px solid rgba(244,233,200,.25);font-size:10px;letter-spacing:.14em}
+.osbar button:hover{background:#f4e9c8;color:#171614}
+html,body,.sec,.mq,.ct,.mode{transition:background-color .7s ease,color .7s ease}
+/* intro: the O of FROGINEER is an eye; scrolling zooms into it and its inside opens onto the rack */
+.intro{position:relative;height:100vh;background:var(--bg);z-index:3;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
+.iw{font-weight:800;font-size:min(13vw,230px);letter-spacing:-.05em;line-height:1;display:flex;align-items:center;white-space:nowrap}
+.il{display:inline-block}
+.eye{position:relative;display:inline-block;width:.78em;height:.78em;margin:0 .03em;flex:none;will-change:transform}
+.ball{position:absolute;inset:0;border:.14em solid var(--fg);border-radius:50%}
+.pupil{position:absolute;left:50%;top:50%;width:.26em;height:.26em;margin:-.13em 0 0 -.13em;border-radius:50%;background:var(--ac);box-shadow:0 0 40px rgba(200,255,77,.55)}
+.intro .ib{position:absolute;top:22vh;color:var(--mut)}.intro .icue{position:absolute;bottom:6vh;color:var(--mut)}
 .cur{position:fixed;left:0;top:0;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#fff;mix-blend-mode:difference;z-index:400;pointer-events:none;opacity:0}
 @media(hover:none){.cur{display:none}}
 </style>
 
-<div class="pre" id="pre"><div class="mono">FROGINEER &mdash; Consulting Group</div><div class="big ser"><span id="pn">000</span></div><div class="row"><span class="mono" id="pt">Booting rack</span><span class="mono">Singapore</span></div><div class="bar"><i id="pb"></i></div></div>
 <div class="grain"></div><div class="cur" id="cur"></div>
 <nav class="nav"><b>FROGINEER</b><div class="r mono"><a class="l" href="#tour">Services</a><a class="l" href="#proof">Proof</a><a class="l" href="#work">Work</a><a class="l" href="#process">Process</a><span class="live">Taking projects</span><a href="#contact">Contact &rarr;</a></div></nav>
-<canvas id="gl"></canvas><div class="vig"></div>
+<canvas id="gl"></canvas>
+<div class="osfl" id="osfl"></div>
+<div class="os" id="os"><iframe id="osf" title="Frogineer OS"></iframe><div class="osbar mono"><button id="osback">&uarr; Back to the rack</button><button id="osnext">Continue &darr;</button></div></div><div class="vig"></div>
 <ul class="prog" id="prog"></ul>
 <div class="mode" id="mode"><button class="on" data-m="0">Structure</button><button data-m="1">Surface</button></div>
-<div class="pv" id="pv"><i id="pvi">01</i></div>
 
 <main>
+<section class="intro" id="intro">
+  <div class="ib mono">FROGINEER &mdash; Consulting Group &middot; Singapore</div>
+  <h1 class="iw" aria-label="FROGINEER"><span class="il lf">F</span><span class="il lf">R</span><span class="eye" aria-hidden="true"><span class="ball"><span class="pupil" id="ipu"></span></span></span><span class="il rt">G</span><span class="il rt">I</span><span class="il rt">N</span><span class="il rt">E</span><span class="il rt">E</span><span class="il rt">R</span></h1>
+  <div class="icue mono">Scroll to look inside</div>
+</section>
 <section class="tour" id="tour">
   <div class="hero" id="hero">
     <div class="meta"><b class="mono">Consulting Group / SG</b>AI, on-prem infrastructure, databases, networks and the websites that front them. One accountable person.</div>
     <h1 class="ser"><span class="ln"><span>We make your tech</span></span><span class="ln"><span><i>disappear.</i></span></span></h1>
-    <div class="foot mono"><span>Scroll to enter the rack</span><span>01 &mdash; 08 services</span></div>
+    <div class="foot mono"><span>Scroll to enter the rack</span><span>01 &mdash; 05 services</span></div>
   </div>
   <div id="chs"></div>
 </section>
@@ -166,7 +195,7 @@ main{position:relative;z-index:2}
 
 <section class="ct" id="contact"><div><span class="mono" style="color:var(--mut)">Next step</span><h2 class="ser" style="margin-top:3vh"><span class="ln"><span>Let's make</span></span><span class="ln"><span>it <i>disappear.</i></span></span></h2></div>
 <div><div class="row"><a class="btn" id="mb" href="mailto:yuejun.tan@miracleoy.fi">Start a conversation <span class="ar">&nearr;</span></a><a class="mail" href="mailto:yuejun.tan@miracleoy.fi">yuejun.tan@miracleoy.fi</a></div>
-<div class="wmx">FROGINEER</div>
+<canvas class="wmx" id="pwc" aria-label="FROGINEER"></canvas>
 <div class="ft mono"><span>&copy; FROGINEER Consulting Group</span><span>Singapore &middot; <span id="clk"></span></span><span>Jaxon Tan, Founder</span></div></div></section>
 </main>
 
@@ -177,6 +206,8 @@ main{position:relative;z-index:2}
 <script>
 (function(){
 gsap.registerPlugin(ScrollTrigger);
+// always start at the top so the intro plays from the wordmark
+if('scrollRestoration' in history)history.scrollRestoration='manual';scrollTo(0,0);
 var AC=new THREE.Color(0xc8ff4d),WH=new THREE.Color(0xefede6),DIM=new THREE.Color(0x3a4046);
 /* ---------- 3D ---------- */
 var cv=document.getElementById('gl'),R=new THREE.WebGLRenderer({canvas:cv,antialias:true});
@@ -187,8 +218,25 @@ function rs(){R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/inne
 var amb=new THREE.AmbientLight(0xffffff,.25),key=new THREE.DirectionalLight(0xffffff,.3);key.position.set(3,6,5);scene.add(amb,key);
 var fillM=new THREE.MeshStandardMaterial({color:0x050607,roughness:1,metalness:0});
 var parts={},LEDS=[];
-function P(n){var p={g:new THREE.Group(),m:new THREE.LineBasicMaterial({color:0xefede6,transparent:true,opacity:1}),h:0};scene.add(p.g);parts[n]=p;return p}
-function B(p,w,h,d,x,y,z,nofill,par){var g=new THREE.BoxGeometry(w,h,d);var tg=par||p.g;if(!nofill){var m=new THREE.Mesh(g,fillM);m.position.set(x,y,z);tg.add(m)}var l=new THREE.LineSegments(new THREE.EdgesGeometry(g),p.m);l.position.set(x,y,z);tg.add(l)}
+// each service gets its own colour when it is the one being explained
+var COL={frame:0xefede6,laptop:0xefede6,nas:0x3ddc84,ai:0x4a86ff,web:0xffb020,db:0xa06bff,telco:0xff5fa2};
+// light theme uses deeper tones so the focus colour still reads against pale grey
+var THEMES={dark:{bg:0x07080a,wh:0xefede6,dim:0x3a4046,fill:[.02,.024,.028],amb:.25,key:.3,led:0xc8ff4d,col:COL},
+ light:{bg:0xe9e6df,wh:0x1d1f1c,dim:0xb9b4aa,fill:[.93,.92,.89],amb:.9,key:.5,led:0x2f8a3a,col:{frame:0x1d1f1c,laptop:0x1d1f1c,nas:0x1f9d55,ai:0x2456d6,web:0xc77800,db:0x7a3fd1,telco:0xd6336c}}},TH=THEMES.dark;
+function P(n){var p={g:new THREE.Group(),m:new THREE.LineBasicMaterial({color:0xefede6,transparent:true,opacity:1}),fm:fillM.clone(),c:new THREE.Color(COL[n]),pc:new THREE.Color(PASTEL[n]),glow:[],h:0,fill:0};scene.add(p.g);parts[n]=p;return p}
+// extra fill materials that take their own colour in the finale (p.fill 0 = dark wireframe, 1 = coloured)
+var XF=[];function XM(p,hex){var x={m:fillM.clone(),c:new THREE.Color(hex),p:p};XF.push(x);return x}
+// printed labels: drawn white on a canvas, tinted each frame with the part's line colour (gold ones stay gold)
+var LBL=[],FANS=[];
+function paint(o){var g=o.c.getContext('2d');g.clearRect(0,0,o.c.width,o.c.height);g.fillStyle=g.strokeStyle='#fff';g.lineJoin=g.lineCap='round';o.draw(g,o.c.width,o.c.height);o.tx.needsUpdate=true}
+function TX(p,par,w,h,x,y,z,draw,gold,S){S=S||1024;var c=document.createElement('canvas');c.width=S;c.height=Math.max(8,Math.round(S*h/w));
+ var tx=new THREE.CanvasTexture(c);tx.anisotropy=4;var m=new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false});
+ var me=new THREE.Mesh(new THREE.PlaneGeometry(w,h),m);me.position.set(x,y,z);(par||p.g).add(me);var o={c:c,tx:tx,draw:draw,m:m,p:p,gold:gold,me:me};LBL.push(o);paint(o);return o}
+function F(g,wt,px,fam){g.font=wt+' '+px+'px '+(fam=='m'?'"JetBrains Mono",monospace':'"Inter Tight",sans-serif')}
+function dot(g,x,y,r){g.beginPath();g.arc(x,y,r,0,7);g.fill()}
+var PASTEL={frame:0xf2f0ea,laptop:0xf2f0ea,nas:0xdfe9e0,ai:0xc9d6f2,web:0xf3dfb4,db:0xddd0f0,telco:0xf3cbd6};
+function GL(p,w,h,x,y,z,par){var m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:p.c,transparent:true,opacity:0,depthWrite:false}));m.position.set(x,y,z);par.add(m);p.glow.push(m)}
+function B(p,w,h,d,x,y,z,nofill,par,xm){var g=new THREE.BoxGeometry(w,h,d);var tg=par||p.g;if(!nofill){var m=new THREE.Mesh(g,xm?xm.m:p.fm);m.position.set(x,y,z);tg.add(m)}var l=new THREE.LineSegments(new THREE.EdgesGeometry(g),p.m);l.position.set(x,y,z);tg.add(l)}
 function S(p,arr,par){var a=new Float32Array(arr);var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(a,3));(par||p.g).add(new THREE.LineSegments(g,p.m))}
 function rect(x,y,z,w,h){return [x,y,z,x+w,y,z, x+w,y,z,x+w,y+h,z, x+w,y+h,z,x,y+h,z, x,y+h,z,x,y,z]}
 function circ(cx,cy,z,r,n){var a=[];for(var i=0;i<n;i++){var t1=i/n*6.2832,t2=(i+1)/n*6.2832;a.push(cx+Math.cos(t1)*r,cy+Math.sin(t1)*r,z,cx+Math.cos(t2)*r,cy+Math.sin(t2)*r,z)}return a}
@@ -201,95 +249,215 @@ var fl=[];for(var i=-20;i<=20;i++){fl.push(i,0,-20,i,0,20,-20,0,i,20,0,i)}S(fr,f
 S(fr,circ(0,0,0,2.6,64).map(function(v,i){return i%3==1?0:v}).map(function(v,i){return v}));
 // UPS
 B(fr,1.5,.4,1.0,0,.35,0);
+TX(fr,null,1.4,.32,0,.35,.505,function(g,W,H){F(g,800,120);g.fillText('UPS',40,150);F(g,500,24,'m');g.fillText('LINE-INTERACTIVE · 1500VA',42,200);
+ g.lineWidth=4;g.strokeRect(430,36,300,160);g.strokeRect(452,72,112,56);g.fillRect(564,88,10,24);for(var i=0;i<4;i++)g.fillRect(460+i*25,80,19,40);
+ F(g,500,36,'m');g.fillText('100%',590,114);F(g,500,20,'m');g.fillText('OUTPUT 230V · 12 MIN',452,172);
+ g.lineWidth=6;g.beginPath();g.arc(910,112,52,0,7);g.stroke();g.beginPath();g.arc(910,118,24,-1.1,4.25);g.stroke();g.beginPath();g.moveTo(910,82);g.lineTo(910,112);g.stroke()});
 // DB
-var db=P('db');B(db,1.5,.4,1.0,0,.85,0);for(var i=0;i<4;i++){S(db,rect(-.62+i*.28,.7,.51,.22,.3));led(db.g,-.51+i*.28,.67,.52)}
+var db=P('db');B(db,1.5,.4,1.0,0,.85,0);for(var i=0;i<4;i++){S(db,rect(-.62+i*.28,.72,.51,.22,.28));led(db.g,-.51+i*.28,.7,.52)}
+TX(db,null,1.4,.06,0,1.02,.505,function(g,W,H){F(g,500,26,'m');g.fillText('DATABASE · ORACLE 23ai · 4× NVMe · RAID 10',8,30);g.fillText('● PRIMARY',846,30)});
+TX(db,null,1.08,.26,-.17,.86,.506,function(g,W,H){F(g,600,30,'m');['NVMe 0','NVMe 1','NVMe 2','NVMe 3'].forEach(function(s,i){g.fillText(s,30+i*265,60);g.fillRect(30+i*265,190,150,6)})});
 db.g.add((function(){var m=new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.CylinderGeometry(.14,.14,.2,10,2)),db.m);m.position.set(.5,.88,.52);m.rotation.x=1.57;m.scale.set(.5,.5,.5);return m})());
 // AI (GPU)
-var ai=P('ai');B(ai,1.5,.5,1.0,0,1.4,0);[-.35,.35].forEach(function(x){S(ai,circ(x,1.4,.51,.19,28));S(ai,circ(x,1.4,.51,.07,12));var s=[];for(var k=0;k<6;k++){var t=k/6*6.28;s.push(x,1.4,.51,x+Math.cos(t)*.18,1.4+Math.sin(t)*.18,.51)}S(ai,s)});led(ai.g,.68,1.58,.52);
+var ai=P('ai');B(ai,1.5,.5,1.0,0,1.4,0);// GPU: two shrouded fans with curved blades that spin, heatsink fins, spec plate
+[-.37,.37].forEach(function(x){S(ai,circ(x,1.4,.51,.2,32).concat(circ(x,1.4,.51,.185,32)));S(ai,[x-.2,1.4,.51,x+.2,1.4,.51,x,1.2,.51,x,1.6,.51]);
+ var fg=new THREE.Group();fg.position.set(x,1.4,.514);ai.g.add(fg);FANS.push(fg);var bl=[];
+ for(var k=0;k<7;k++){var a0=k/7*6.2832;for(var j=0;j<5;j++){var r1=.055+j*.024,r2=r1+.024,a1=a0+j*.16,a2=a1+.16;bl.push(Math.cos(a1)*r1,Math.sin(a1)*r1,0,Math.cos(a2)*r2,Math.sin(a2)*r2,0)}
+  bl.push(Math.cos(a0)*.055,Math.sin(a0)*.055,0,Math.cos(a0+.8)*.175,Math.sin(a0+.8)*.175,0)}
+ S(ai,bl.concat(circ(0,0,0,.055,14),circ(0,0,0,.025,10)),fg)});
+var fin=[];for(var i=0;i<8;i++){var y=1.21+i*.05;fin.push(.6,y,.51,.72,y,.51)}S(ai,fin);led(ai.g,.66,1.62,.52);
+TX(ai,null,.3,.44,0,1.4,.506,function(g,W,H){g.textAlign='center';F(g,800,96);g.fillText('GPU',W/2,120);F(g,500,34,'m');g.fillText('2× RTX 6000',W/2,200);g.fillText('96 GB VRAM',W/2,250);g.fillText('LOCAL LLM',W/2,300);
+ g.lineWidth=4;g.strokeRect(70,360,372,40);g.fillRect(78,368,250,24);F(g,500,26,'m');g.fillText('LOAD 68% · 61°C',W/2,450)},false,512);
 // NAS
 var nas=P('nas');B(nas,1.5,.8,1.0,0,2.15,0);for(var i=0;i<8;i++){S(nas,rect(-.64+i*.16,1.9,.51,.12,.5));led(nas.g,-.58+i*.16,1.82,.52,.035)}S(nas,rect(-.7,1.78,.51,1.4,.01));
+TX(nas,null,1.4,.09,0,2.475,.505,function(g,W,H){F(g,500,30,'m');g.fillText('NAS · 8-BAY · 192 TB · RAID 6 · 10GbE',8,44);g.fillText('● HEALTHY',836,44)});
 // Telco
 var tc=P('telco');B(tc,1.5,.25,1.0,0,2.78,0);for(var i=0;i<12;i++){B(tc,.07,.07,.02,-.62+i*.1,2.78,.51,true)}led(tc.g,.65,2.84,.52);
-B(tc,1.5,.3,1.0,0,3.15,0);[-.6,.6].forEach(function(x){S(tc,[x,3.3,0,x,3.75,0])});
-for(var k=1;k<=3;k++){var a=[],r=.22*k+.15;for(var i=0;i<14;i++){var t1=.8+i/14*1.55,t2=.8+(i+1)/14*1.55;a.push(Math.cos(t1)*r,3.45+Math.sin(t1)*r*.9,.7,Math.cos(t2)*r,3.45+Math.sin(t2)*r*.9,.7)}S(tc,a)}
-// Cloud
-var cl=P('cloud');cl.g.position.set(0,4.75,0);[[-.7,0,0,.5],[0,.28,0,.72],[.72,0,0,.5],[.2,-.1,.35,.45],[-.3,-.18,-.35,.42]].forEach(function(c){var m=new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(c[3],1)),cl.m);m.position.set(c[0],c[1],c[2]);cl.g.add(m)});
-var up=[];for(var y=3.75;y<4.1;y+=.1)up.push(0,y,0,0,y+.05,0);S(fr,up);
+TX(tc,null,1.4,.06,0,2.87,.505,function(g,W,H){F(g,500,26,'m');g.fillText('SWITCH · 200GbE · 12× QSFP56 · L3 MANAGED',8,32);g.fillText('● LINK',890,32)});
+TX(tc,null,1.4,.05,0,2.705,.505,function(g,W,H){F(g,500,22,'m');g.textAlign='center';for(var i=0;i<12;i++)g.fillText(String(i+1),(i*.1+.08)/1.4*W,26)});
+// Wi-Fi 7 router with antennas
+B(tc,1.5,.3,1.0,0,3.15,0);[-.6,.6].forEach(function(x){S(tc,[x,3.3,0,x,3.75,0]);B(tc,.05,.08,.05,x,3.77,0,true)});
+TX(tc,null,1.4,.26,0,3.15,.505,function(g,W,H){F(g,800,92);g.fillText('Wi-Fi 7',40,112);F(g,500,24,'m');g.fillText('BE19000 · TRI-BAND · 6 GHz · MLO',42,162);
+ ['2.4G','5G','6G','WAN'].forEach(function(s,i){var x=560+i*80;dot(g,x+16,70,9);F(g,500,18,'m');g.fillText(s,x,110)});
+ g.lineWidth=7;for(var k=1;k<=3;k++){g.beginPath();g.arc(915,150,k*30,-2.4,-.74);g.stroke()}dot(g,915,150,9)});
+// glass front door, hinged on the left post: closed in the overview, swings open for the tour
+var glassM=new THREE.MeshStandardMaterial({color:0xcfe3ee,transparent:true,opacity:.07,metalness:.3,roughness:.05,side:THREE.DoubleSide,depthWrite:false});
+var door=new THREE.Group();door.position.set(-.89,1.87,.62);fr.g.add(door);
+B(fr,1.78,3.66,.03,.89,0,0,true,door);B(fr,1.66,3.54,.01,.89,0,0,true,door);
+var gl=new THREE.Mesh(new THREE.PlaneGeometry(1.66,3.54),glassM);gl.position.set(.89,0,0);door.add(gl);
+B(fr,.03,.5,.05,1.66,0,.045,true,door);S(fr,[.3,1.4,.02,1.1,.4,.02, .55,1.55,.02,1.35,.55,.02, .3,-.6,.02,.9,-1.35,.02],door);
+// redraw printed labels once the web fonts have loaded
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){LBL.forEach(paint)});
 // Web monitor
 var web=P('web'),wg=new THREE.Group();wg.position.set(-2.75,1.65,.5);wg.rotation.y=.38;web.g.add(wg);
 B(web,1.9,1.2,.06,0,0,0,false,wg);S(web,[0,-.6,0,0,-.95,0,-.35,-.95,0,.35,-.95,0],wg);
-S(web,rect(-.85,.47,.04,1.7,.08).concat(rect(-.85,-.05,.04,1.0,.45),rect(.2,.1,.04,.65,.1),rect(.2,-.05,.04,.65,.1),rect(-.85,-.5,.04,.52,.35),rect(-.28,-.5,.04,.52,.35),rect(.29,-.5,.04,.56,.35)),wg);
-// APEX dashboard
-var ap=P('apex'),ag=new THREE.Group();ag.position.set(2.85,1.75,.3);ag.rotation.y=-.38;ap.g.add(ag);
-B(ap,2.1,1.3,.06,0,0,0,false,ag);
-var A=rect(-.95,-.55,.04,.38,1.1).concat(rect(-.5,.25,.04,.45,.28),rect(.0,.25,.04,.45,.28),rect(.5,.25,.04,.45,.28));
-for(var i=0;i<5;i++){A=A.concat(rect(-.5+i*.2,-.55,.04,.12,.2+i*.07))}
-A=A.concat([.3,-.5,.04,.45,-.3,.04,.45,-.3,.04,.6,-.42,.04,.6,-.42,.04,.78,-.1,.04,.78,-.1,.04,.95,-.2,.04]);S(ap,A,ag);
-// Automation graph
-var au=P('auto'),ng=new THREE.Group();ng.position.set(-3.1,3.9,-1);au.g.add(ng);
-var N=[[0,0,0],[1,.5,.2],[1.1,-.6,-.1],[2,.1,.3],[-.9,.7,-.2],[-.8,-.7,.3],[.2,1.3,0],[1.9,1.0,-.2],[2.1,-.9,.1]],E=[[0,1],[0,2],[1,3],[2,3],[4,0],[5,0],[4,6],[6,1],[3,7],[3,8],[2,8],[1,7]],ea=[];
-E.forEach(function(e){ea.push(N[e[0]][0],N[e[0]][1],N[e[0]][2],N[e[1]][0],N[e[1]][1],N[e[1]][2])});S(au,ea,ng);
-N.forEach(function(n){var m=new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(.1,0)),au.m);m.position.set(n[0],n[1],n[2]);ng.add(m)});
-var pulses=[];for(var i=0;i<6;i++){var m=new THREE.Mesh(new THREE.SphereGeometry(.04,8,8),new THREE.MeshBasicMaterial({color:0xc8ff4d}));ng.add(m);pulses.push({m:m,e:E[i*2%E.length],t:Math.random(),s:.25+Math.random()*.3})}
+// monitor screen: the FROGINEER wordmark in white particles with the lime eye in the O (live canvas texture)
+var scr=document.createElement('canvas');scr.width=1024;scr.height=626;var sg=scr.getContext('2d'),stx=new THREE.CanvasTexture(scr),SP=[];
+var sm=new THREE.Mesh(new THREE.PlaneGeometry(1.76,1.08),new THREE.MeshBasicMaterial({map:stx}));sm.position.set(0,0,.034);wg.add(sm);
+function buildScr(){var o=document.createElement('canvas');o.width=1024;o.height=626;var g=o.getContext('2d'),fs=200,y0=313;
+ g.font='800 '+fs+'px "Inter Tight",sans-serif';fs*=880/g.measureText('FROGINEER').width;g.font='800 '+fs+'px "Inter Tight",sans-serif';g.textBaseline='middle';g.fillStyle='#fff';
+ var x0=(1024-g.measureText('FROGINEER').width)/2,wFR=g.measureText('FR').width,wO=g.measureText('O').width,cx=x0+wFR+wO/2,R=fs*.33;
+ g.fillText('FR',x0,y0);g.fillText('GINEER',x0+wFR+wO,y0);g.lineWidth=fs*.15;g.strokeStyle='#fff';g.beginPath();g.arc(cx,y0,R,0,7);g.stroke();
+ g.fillStyle='rgb(0,255,0)';g.beginPath();g.arc(cx,y0,R*.5,0,7);g.fill();
+ var d=g.getImageData(0,0,1024,626).data;SP=[];for(var y=0;y<626;y+=5)for(var x=0;x<1024;x+=5){var i=(y*1024+x)*4;if(d[i+3]>140)SP.push({tx:x,ty:y,sx:Math.random()*1024,sy:Math.random()*626,l:d[i]<100&&d[i+1]>200,ph:Math.random()*6.3})}}
+function drawScr(a,t){sg.fillStyle='#07080a';sg.fillRect(0,0,1024,626);var e=a*a*(3-2*a),px=Math.sin(t*.7)*6,py=Math.cos(t*.5)*4;
+ for(var i=0;i<SP.length;i++){var p=SP[i],x=p.sx+(p.tx-p.sx)*e+Math.sin(t*1.3+p.ph)*.9,y=p.sy+(p.ty-p.sy)*e+Math.cos(t*1.1+p.ph)*.9;
+  if(p.l){x+=px;y+=py;sg.fillStyle='#c8ff4d'}else sg.fillStyle='#efede6';sg.fillRect(x,y,3.4,3.4)}stx.needsUpdate=true}
+buildScr();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(buildScr);
+// desk the monitor stands on (surface at local y -.95, floor at -1.65)
+B(web,3.4,.05,1.2,-.5,-.975,.1,false,wg);[[-2.12,-.42],[1.12,-.42],[-2.12,.62],[1.12,.62]].forEach(function(c){B(web,.05,.65,.05,c[0],-1.325,c[1],true,wg)});
+// laptop (the interactive OS computer)
+// its own part so it is never highlighted with the web chapter; it is saved for the finale
+var lap=P('laptop');
+B(lap,.8,.035,.52,.45,-.932,.47,false,wg);var kb=[];for(var r=0;r<4;r++)for(var k=0;k<8;k++)kb=kb.concat(rect(.1+k*.085,-.62+r*.07,-.912,.06,.05));
+var kg=new THREE.Group();kg.rotation.x=-1.5708;wg.add(kg);S(lap,kb,kg);
+// lid starts closed (1.5708) and opens to -.28 in the finale
+var lg=new THREE.Group();lg.position.set(.45,-.915,.21);lg.rotation.x=1.5708;wg.add(lg);
+TX(lap,lg,.46,.1,0,.26,-.012,function(g,W,H){g.textAlign='center';F(g,800,150);g.fillText("Jaxon's PC",W/2,H/2+52)}).me.rotation.x=Math.PI;
+B(lap,.8,.52,.02,0,.26,0,false,lg);S(lap,rect(-.36,.05,.012,.72,.42).concat(rect(-.3,.13,.012,.38,.26),rect(.14,.3,.012,.16,.06),rect(.14,.2,.012,.16,.06)),lg);
+// laptop screen: boot sequence drawn as the lid opens (bp 0..1 scrubbed by scroll), shown at opacity ls
+var ls={v:0},bp={v:0},bc=document.createElement('canvas');bc.width=740;bc.height=460;var bgx=bc.getContext('2d'),btx=new THREE.CanvasTexture(bc),lastB=-1;
+var lapGlow=new THREE.Mesh(new THREE.PlaneGeometry(.74,.46),new THREE.MeshBasicMaterial({map:btx,transparent:true,opacity:0,depthWrite:false}));lapGlow.position.set(0,.26,.014);lg.add(lapGlow);
+var BOOT=['> power on','> checking storage ...... ok','> mounting nas://office ... ok','> loading local llm ...... ok','> starting frogineer os'];
+function bootDraw(b){var g=bgx;g.fillStyle='#171614';g.fillRect(0,0,740,460);g.fillStyle='#f4e9c8';g.font='800 54px "Inter Tight",sans-serif';g.fillText('FROGINEER OS',40,90);
+ g.font='500 22px "JetBrains Mono",monospace';var n=Math.floor(b*BOOT.length+.001);for(var i=0;i<Math.min(n,BOOT.length);i++)g.fillText(BOOT[i],40,150+i*40);
+ g.strokeStyle='#f4e9c8';g.lineWidth=3;g.strokeRect(40,380,660,22);g.fillStyle='#c8ff4d';g.fillRect(44,384,652*b,14);btx.needsUpdate=true}
+bootDraw(0);
+// desktop NAS on the desk (lights up with the NAS chapter)
+// 8-bay unit: white body, sage drive trays, mint LEDs, gold FROGINEER plate (colours appear in the fill-in finale)
+var dnB=XM(nas,0xf1efe8),dnT=XM(nas,0xa9c4b0),dnR=XM(nas,0x8aa592);
+B(nas,.92,.6,.6,-1.62,-.65,.05,false,wg,dnB);B(nas,.8,.36,.02,-1.62,-.7,.355,true,wg);
+var tr=new THREE.Mesh(new THREE.BoxGeometry(.8,.36,.02),dnR.m);tr.position.set(-1.62,-.7,.35);wg.add(tr);
+for(var i=0;i<8;i++){var x=-1.97+i*.1;B(nas,.085,.32,.03,x,-.71,.37,false,wg,dnT);led(wg,x,-.58,.39,.022);var h=new THREE.Mesh(new THREE.BoxGeometry(.04,.012,.01),new THREE.MeshBasicMaterial({color:0xd9c69a}));h.position.set(x,-.82,.39);wg.add(h)}
+// front icon row (database, send, photos, power, camera, code, server) and the gold FROGINEER plate
+TX(nas,wg,.8,.13,-1.62,-.44,.356,function(g,W,H){var s=44,y=H/2;g.lineWidth=8;for(var k=0;k<7;k++){var x=W/7*(k+.5);g.beginPath();
+ if(k==0){for(var i=0;i<3;i++){var cy=y-s*.6+i*s*.6;g.moveTo(x+s*.55,cy);g.ellipse(x,cy,s*.55,s*.22,0,0,6.3)}g.moveTo(x-s*.55,y-s*.6);g.lineTo(x-s*.55,y+s*.6);g.moveTo(x+s*.55,y-s*.6);g.lineTo(x+s*.55,y+s*.6)}
+ if(k==1){g.moveTo(x-s*.8,y-s*.05);g.lineTo(x+s*.8,y-s*.75);g.lineTo(x+s*.15,y+s*.8);g.lineTo(x-s*.05,y+s*.1);g.closePath();g.moveTo(x-s*.05,y+s*.1);g.lineTo(x+s*.8,y-s*.75)}
+ if(k==2){g.rect(x-s*.8,y-s*.65,s*1.6,s*1.3);g.moveTo(x-s*.8,y+s*.55);g.lineTo(x-s*.25,y);g.lineTo(x+s*.2,y+s*.4);g.lineTo(x+s*.45,y+s*.15);g.lineTo(x+s*.8,y+s*.5);g.moveTo(x+s*.47,y-s*.3);g.arc(x+s*.35,y-s*.3,s*.12,0,6.3)}
+ if(k==3){g.rect(x-s*.85,y-s*.4,s*1.5,s*.8);g.rect(x+s*.65,y-s*.18,s*.16,s*.36);g.fillRect(x-s*.7,y-s*.25,s*.45,s*.5)}
+ if(k==4){g.rect(x-s*.8,y-s*.15,s*1.05,s*.75);g.moveTo(x+s*.25,y+s*.15);g.lineTo(x+s*.85,y-s*.15);g.lineTo(x+s*.85,y+s*.6);g.closePath();g.moveTo(x-s*.07,y-s*.48);g.arc(x-s*.27,y-s*.48,s*.2,0,6.3)}
+ if(k==5){g.rect(x-s*.85,y-s*.6,s*1.7,s*1.2);F(g,700,s*.8,'m');g.textAlign='center';g.fillText('</>',x,y+s*.27);g.textAlign='left'}
+ if(k==6){for(var i=0;i<3;i++){g.rect(x-s*.7,y-s*.78+i*s*.53,s*1.4,s*.46);g.fillRect(x+s*.3,y-s*.6+i*s*.53,s*.12,s*.12)}}
+ g.stroke()}});
+TX(nas,wg,.32,.05,-1.62,-.905,.356,function(g,W,H){F(g,900,118);g.textAlign='center';if('letterSpacing' in g)g.letterSpacing='10px';g.fillText('FROGINEER',W/2,H/2+42)},true);
+GL(nas,.8,.36,-1.62,-.7,.395,wg);
 // dust
 var dg=new THREE.BufferGeometry(),da=new Float32Array(900);for(var i=0;i<900;i+=3){da[i]=(Math.random()-.5)*16;da[i+1]=Math.random()*8;da[i+2]=(Math.random()-.5)*12}
 dg.setAttribute('position',new THREE.BufferAttribute(da,3));var dust=new THREE.Points(dg,new THREE.PointsMaterial({color:0xefede6,size:.025,transparent:true,opacity:.5}));scene.add(dust);
-var NAMES=['auto','nas','ai','web','apex','db','cloud','telco'];
+var NAMES=['nas','ai','web','db','telco'],NC=NAMES.length;
 /* camera rig */
+var zo={v:1},fN=0,lv={v:0},C1=new THREE.Color(),C2=new THREE.Color();
 var cp={px:4.2,py:3.0,pz:8.2,tx:0,ty:2.5,tz:0},surf={v:0},ov={v:1},mx=0,my=0,smx=0,smy=0,vis=true,SH=-1.9;
-var K=[ // [camera],[target] for each chapter
-[[-2.4,4.0,3.8],[-3.0,3.9,-1]],[[.9,2.4,3.2],[0,2.15,.5]],[[-.9,1.6,2.9],[0,1.4,.5]],[[-1.6,1.8,3.6],[-2.8,1.65,.5]],[[1.9,1.9,4.1],[2.85,1.75,.3]],[[1.2,1.1,2.9],[0,.85,.5]],[[2.6,3.5,6.0],[0,4.7,0]],[[-.8,3.2,3.3],[0,3.15,.6]]];
+// per chapter: [target, azimuth, elevation, distance]; camera orbits the subject so it is always fully in frame
+var K=[[[-4.3,1.0,1.2],.38,.28,3.4],[[0,1.4,.5],-.25,.18,3.8],[[-3.1,1.25,.8],.38,.25,5.6],[[0,.85,.5],.25,.22,3.4],[[0,3.0,.5],-.2,.15,3.8]].map(function(k){var t=k[0],a=k[1],e=k[2],d=k[3];return [[t[0]+d*Math.sin(a)*Math.cos(e),t[1]+d*Math.sin(e),t[2]+d*Math.cos(a)*Math.cos(e)],t]});
 var clock=new THREE.Clock();
 function frame(){requestAnimationFrame(frame);if(!vis)return;var t=clock.getElapsedTime();
   smx+=(mx-smx)*.05;smy+=(my-smy)*.05;
   var right=new THREE.Vector3(),fw=new THREE.Vector3();
   cam.position.set(cp.px+smx*.5,cp.py-smy*.3,cp.pz);var tg=new THREE.Vector3(cp.tx,cp.ty,cp.tz);
-  cam.lookAt(tg);cam.updateMatrixWorld();right.setFromMatrixColumn(cam.matrixWorld,0);var sh=right.multiplyScalar(SH*ov.v+(-1.5)*(1-ov.v));
-  cam.position.add(sh);tg.add(sh);cam.lookAt(tg);
-  var sv=surf.v;fillM.color.setRGB(.02+sv*.09,.024+sv*.12,.028+sv*.15);fillM.metalness=sv*.7;fillM.roughness=1-sv*.65;
-  amb.intensity=.25+sv*.55;key.intensity=.3+sv*1.7;
-  for(var n in parts){var p=parts[n];if(n=='frame'){p.m.color.copy(DIM).lerp(WH,.35+ov.v*.45);p.m.opacity=(.5+ov.v*.4)*(1-sv*.45);continue}
-    var c=p.m.color.copy(DIM).lerp(WH,ov.v);c.lerp(AC,p.h*(1-ov.v));p.m.opacity=(ov.v*.92+(1-ov.v)*(.28+.72*p.h))*(1-sv*.4)}
+  // narrow / portrait screens: back the camera off so the subject still fits
+  var zf=Math.max(1,1.5/cam.aspect);if(zf>1)cam.position.sub(tg).multiplyScalar(zf).add(tg);
+  cam.lookAt(tg);
+  // push the subject into the right half (desktop) or upper half (mobile) so the copy never covers it
+  var W=innerWidth,H=innerHeight;var zv=zo.v;if(W<800)cam.setViewOffset(W,H,0,H*.2*zv,W,H);else cam.setViewOffset(W,H,-W*.2*zv,0,W,H);
+  // finale: lv.v blends the whole scene from the dark theme to the light one
+  var L=lv.v,TD=THEMES.dark,TL=THEMES.light,lt=L>.5;
+  C1.setHex(TD.bg).lerp(C2.setHex(TL.bg),L);R.setClearColor(C1);scene.fog.color.copy(C1);
+  WH.setHex(TD.wh).lerp(C2.setHex(TL.wh),L);DIM.setHex(TD.dim).lerp(C2.setHex(TL.dim),L);dust.material.color.copy(WH);
+  var sv=surf.v;fillM.color.setRGB(TD.fill[0]+(TL.fill[0]-TD.fill[0])*L+sv*.09,TD.fill[1]+(TL.fill[1]-TD.fill[1])*L+sv*.12,TD.fill[2]+(TL.fill[2]-TD.fill[2])*L+sv*.15);fillM.metalness=sv*.7;fillM.roughness=1-sv*.65;
+  amb.intensity=TD.amb+(TL.amb-TD.amb)*L+sv*.55;key.intensity=TD.key+(TL.key-TD.key)*L+sv*1.7;
+  XF.forEach(function(x){x.m.color.copy(fillM.color).lerp(x.c,x.p.fill)});
+  for(var n in parts){var p=parts[n];if(n=='frame'){p.fm.color.copy(fillM.color).lerp(p.pc,p.fill);p.fm.metalness=fillM.metalness;p.fm.roughness=fillM.roughness;p.m.color.copy(DIM).lerp(WH,.35+ov.v*.45);p.m.opacity=(.5+ov.v*.4)*(1-sv*.45);continue}
+    var f=p.h*(1-ov.v),c=p.m.color.copy(DIM).lerp(WH,ov.v);c.lerp(p.c,f);p.m.opacity=(ov.v*.92+(1-ov.v)*(.28+.72*p.h))*(1-sv*.4);
+    p.fm.color.copy(fillM.color);if(lt)p.fm.color.lerp(p.c,f*.3);p.fm.color.lerp(p.pc,p.fill);p.fm.metalness=fillM.metalness;p.fm.roughness=fillM.roughness;p.fm.emissive.copy(p.c).multiplyScalar(lt?0:f*.28);
+    p.glow.forEach(function(g){g.material.opacity=f*.32})}
+  LBL.forEach(function(o){if(o.gold){o.m.color.setHex(0xb8975a);o.m.opacity=.95}else{o.m.color.copy(o.p.m.color);o.m.opacity=Math.min(1,o.p.m.opacity*1.1)}});
+  FANS.forEach(function(f,i){f.rotation.z=-t*(2.6+i*.5)});
+  if((fN++&1)==0)drawScr(1,t);lapGlow.material.opacity=ls.v;if(Math.abs(bp.v-lastB)>.004){lastB=bp.v;bootDraw(bp.v)}
+  glassM.opacity=.06+L*.06;
   LEDS.forEach(function(l){l.material.opacity=1;l.visible=Math.sin(t*3+l.userData.ph)>-.55});
-  pulses.forEach(function(p){p.t+=p.s*.016;if(p.t>1){p.t=0;p.e=E[Math.floor(Math.random()*E.length)]}var a=N[p.e[0]],b=N[p.e[1]];p.m.position.set(a[0]+(b[0]-a[0])*p.t,a[1]+(b[1]-a[1])*p.t,a[2]+(b[2]-a[2])*p.t)});
-  ng.rotation.y=Math.sin(t*.3)*.25;cl.g.position.y=4.75+Math.sin(t*.8)*.06;cl.g.rotation.y=t*.15;dust.rotation.y=t*.01;
+  dust.rotation.y=t*.01;
   R.render(scene,cam)}
 frame();
 addEventListener('mousemove',function(e){mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
 /* ---------- UI build ---------- */
-var CH=[['AI &amp; Automation','Work that runs <i>while you sleep.</i>','Intake, reports, follow-ups and approvals wired together so nobody copy-pastes at 11pm.',['Workflow audit &amp; mapping','n8n, Make or custom Python','Human-in-the-loop approvals'],''],
-['NAS &amp; On-prem Storage','Storage you <i>own,</i> not rent.','Stop paying a monthly toll on every terabyte. Fast shared storage in your office, with versions and offsite backup.',['Synology and TrueNAS builds','10GbE and Wi-Fi 6/7 networking','3-2-1 backup, restore drills'],'Helped us save on cloud storage.'],
+var CH=[['NAS &amp; On-prem Storage','Storage you <i>own,</i> not rent.','Stop paying a monthly toll on every terabyte. Fast shared storage in your office, with versions and offsite backup.',['Synology and TrueNAS builds','10GbE and Wi-Fi 6/7 networking','3-2-1 backup, restore drills'],'Helped us save on cloud storage.'],
 ['On-prem AI','AI that <i>never leaves</i> the building.','Local language models over your documents. Your data stays private and your answers stay yours.',['Local LLMs with Ollama','Private document search (RAG)','GPU sizing and power planning'],'Kept our data private.'],
 ['Web Design &amp; Development','Sites that look like they <i>cost more.</i>','This page is the proof. Motion, 3D and speed, built to convert and held to a performance budget.',['Art direction and design systems','GSAP, Three.js, Next.js','Performance and SEO'],''],
-['Oracle APEX','From spreadsheet chaos to <i>one app.</i>','Low-code business apps on the Oracle database, shipped in weeks instead of quarters.',['Forms, reports, dashboards','Authentication and roles','ORDS and REST integration'],''],
 ['Database Administration','A database that <i>never panics.</i>','Backups you have actually restored, queries that are tuned, upgrades without drama.',['Backup and recovery','Performance tuning','Security hardening'],''],
-['Cloud Infrastructure','Cloud, <i>sized right.</i>','Use the cloud where it wins and bring the rest home. Costs you can predict.',['Cost and usage review','AWS, OCI and Azure foundations','Hybrid on-prem plus cloud'],''],
 ['Telco &amp; Home Network','Wi-Fi that <i>finally behaves.</i>','Fibre, mesh, VLANs and routers set up properly for homes, shops and offices.',['Site survey and design','Router and switch configuration','Monitoring and remote support'],'']];
-document.getElementById('chs').innerHTML=CH.map(function(c,i){return '<article class="ch"><div class="n mono">0'+(i+1)+' / 08 &mdash; '+c[0]+'</div><h2 class="ser">'+c[1]+'</h2><p>'+c[2]+'</p><ul>'+c[3].map(function(b){return '<li>'+b+'</li>'}).join('')+'</ul>'+(c[4]?'<q>'+c[4]+'</q>':'')+'</article>'}).join('');
+document.getElementById('chs').innerHTML=CH.map(function(c,i){return '<article class="ch" style="--ac:#'+('00000'+COL[NAMES[i]].toString(16)).slice(-6)+'"><div class="n mono">0'+(i+1)+' / 0'+NC+' &mdash; '+c[0]+'</div><h2 class="ser">'+c[1]+'</h2><p>'+c[2]+'</p><ul>'+c[3].map(function(b){return '<li>'+b+'</li>'}).join('')+'</ul>'+(c[4]?'<q>'+c[4]+'</q>':'')+'</article>'}).join('');
 document.getElementById('prog').innerHTML=CH.map(function(c,i){return '<li>0'+(i+1)+'</li>'}).join('');
 var pli=document.querySelectorAll('#prog li'),chs=document.querySelectorAll('.ch');
+/* ---------- theme ---------- */
+function hex(n){return '#'+('00000'+n.toString(16)).slice(-6)}
+function applyTheme(){var L=document.documentElement.dataset.theme=='light';TH=L?THEMES.light:THEMES.dark;
+ R.setClearColor(TH.bg);scene.fog.color.setHex(TH.bg);WH.setHex(TH.wh);DIM.setHex(TH.dim);dust.material.color.setHex(TH.wh);
+ for(var n in parts){parts[n].c.setHex(TH.col[n]);parts[n].glow.forEach(function(g){g.material.color.setHex(TH.col[n])})}
+ LEDS.forEach(function(l){l.material.color.setHex(TH.led)});
+ chs.forEach(function(c,i){c.style.setProperty('--ac',hex(TH.col[NAMES[i]]))});
+}
+applyTheme();
 /* ---------- scroll ---------- */
 var lenis=new Lenis({lerp:.09});lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(function(t){lenis.raf(t*1000)});gsap.ticker.lagSmoothing(0);
 document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();lenis.scrollTo(t,{offset:0})}})});
-var U=function(i){return 1.2+i*1.8},END=U(7)+2.4;
+/* intro: split the wordmark, zoom the O to fill the screen, its inside is a hole onto the 3D rack */
+var intro=document.getElementById('intro'),eyeEl=intro.querySelector('.eye'),ipu=document.getElementById('ipu');
+function eg(){var r=eyeEl.getBoundingClientRect();return {cx:r.left+r.width/2,cy:r.top+r.height/2,d:r.width}}
+var itl=gsap.timeline({defaults:{ease:'none'},scrollTrigger:{trigger:'#intro',start:'top top',end:'+=160%',pin:true,scrub:.7,anticipatePin:1,invalidateOnRefresh:true}});
+itl.to('#intro .ib,#intro .icue',{opacity:0,y:-40,duration:.2},0)
+ .to(ipu,{scale:0,duration:.12},0)
+ .to('#intro .lf',{x:function(){return -innerWidth*.5},opacity:0,duration:.7,ease:'power2.in'},0)
+ .to('#intro .rt',{x:function(){return innerWidth*.5},opacity:0,duration:.7,ease:'power2.in'},0)
+ .to(eyeEl,{x:function(){return innerWidth/2-eg().cx},y:function(){return innerHeight/2-eg().cy},scale:function(){return Math.hypot(innerWidth,innerHeight)/(eg().d*.64)*1.15},ease:'power2.in',duration:1},.1);
+function hole(){var r=eyeEl.getBoundingClientRect(),rr=r.width/2*.64*Math.min(1,itl.progress()*9),m=rr<.5?'none':'radial-gradient(circle at '+(r.left+r.width/2)+'px '+(r.top+r.height/2)+'px,transparent '+rr+'px,#000 '+(rr+1)+'px)';intro.style.webkitMaskImage=m;intro.style.maskImage=m}
+itl.eventCallback('onUpdate',hole);hole();
+addEventListener('mousemove',function(e){if(itl.progress()>0)return;var r=eyeEl.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,d=Math.hypot(dx,dy)||1,m=Math.min(r.width*.14,d*.15);ipu.style.translate=(dx/d*m).toFixed(1)+'px '+(dy/d*m).toFixed(1)+'px'});
+var U=function(i){return 1.2+i*1.8},LAST=U(NC-1),OST=LAST+5.4,END=OST+2.6;
 var tl=gsap.timeline({defaults:{ease:'none'},scrollTrigger:{trigger:'#tour',start:'top top',end:function(){return '+='+innerHeight*END*.55},pin:true,scrub:.9,anticipatePin:1,
- onUpdate:function(s){var t=s.progress*END,i=Math.round((t-1.2)/1.8);if(t<.6)i=-1;if(t>U(7)+1.2)i=-1;pli.forEach(function(li,k){li.classList.toggle('on',k==i)})},
- onToggle:function(s){vis=true}}});
+ onUpdate:function(s){var t=s.progress*END,i=Math.round((t-1.2)/1.8);if(t<.6)i=-1;if(t>LAST+1.2)i=-1;pli.forEach(function(li,k){li.classList.toggle('on',k==i)});
+  // the OS opens when the dive reaches the screen (time OST) and stays shut once dismissed until you scroll well away
+  var near=Math.abs(t-OST)<.15;if(near&&!osDone)openOS();else if(!near&&osOn)closeOS();if(Math.abs(t-OST)>.6)osDone=false}, onToggle:function(s){vis=true}}});
+/* interactive OS: full-screen os-version.html, loaded on first open so its boot sequence plays */
+var osEl=document.getElementById('os'),osF=document.getElementById('osf'),osOn=false,osDone=false;
+function openOS(){osOn=true;if(!osF.src)osF.src='os-version.html';osEl.classList.add('on');lenis.stop()}
+function closeOS(){osOn=false;osEl.classList.remove('on');lenis.start()}
+// one unit of timeline time = innerHeight*.55 px of scroll
+document.getElementById('osback').addEventListener('click',function(){osDone=true;closeOS();lenis.scrollTo(scrollY-innerHeight*.55*3,{duration:1.6})});
+document.getElementById('osnext').addEventListener('click',function(){osDone=true;closeOS();lenis.scrollTo(scrollY+innerHeight*.55*2,{duration:2})});
+tl.to(door.rotation,{y:-1.85,duration:.9,ease:'power2.inOut'},.2).to(door.rotation,{y:0,duration:.9,ease:'power2.inOut'},LAST+1.0);
 tl.to('#hero',{opacity:0,y:-60,duration:.7},0).to('#prog,#mode',{opacity:1,duration:.4},.5);
-for(var i=0;i<8;i++){(function(i){var t=U(i),k=K[i],p=parts[NAMES[i]];
+for(var i=0;i<NC;i++){(function(i){var t=U(i),k=K[i],p=parts[NAMES[i]];
  tl.to(cp,{px:k[0][0],py:k[0][1],pz:k[0][2],tx:k[1][0],ty:k[1][1],tz:k[1][2],duration:.95,ease:'power2.inOut'},t-.95);
  if(i==0)tl.to(ov,{v:0,duration:.8},t-.9);
  tl.to(p,{h:1,duration:.4},t-.4).to(p,{h:0,duration:.4},t+.85);
  tl.set(chs[i],{visibility:'visible'},t-.25).fromTo(chs[i],{opacity:0,y:30},{opacity:1,y:0,duration:.35},t-.25).to(chs[i],{opacity:0,y:-30,duration:.3},t+.65).set(chs[i],{visibility:'hidden'},t+.95);
 })(i)}
-tl.to(ov,{v:1,duration:.8},U(7)+.9).to(cp,{px:4.6,py:3.1,pz:12.5,tx:0,ty:2.5,tz:0,duration:1.3,ease:'power2.inOut'},U(7)+.9).to('#prog,#mode',{opacity:0,duration:.4},U(7)+1.1).to('#gl',{opacity:0,duration:.7},END-.8).to({},{duration:.01},END);
+tl.to(ov,{v:1,duration:.8},LAST+.9).to(cp,{px:1.6,py:3.0,pz:8.6,tx:-1.6,ty:1.7,tz:0,duration:1.3,ease:'power2.inOut'},LAST+.9).to('#prog,#mode',{opacity:0,duration:.4},LAST+1.1);
+// finale: after the whole stack is seen, dive into the laptop screen and boot the interactive OS
+// screen pose is measured with the lid open, then the lid goes back to closed
+lg.rotation.x=-.28;scene.updateMatrixWorld(true);var sP=new THREE.Vector3(),sN=new THREE.Vector3();lapGlow.getWorldPosition(sP);lapGlow.getWorldDirection(sN);
+lg.rotation.x=1.5708;scene.updateMatrixWorld(true);
+var lP=wg.localToWorld(new THREE.Vector3(.45,-.85,.4)),dN=new THREE.Vector3(Math.sin(.38),0,Math.cos(.38)),
+ near={px:lP.x+dN.x*1.5,py:lP.y+.95,pz:lP.z+dN.z*1.5,tx:lP.x,ty:lP.y+.12,tz:lP.z,ease:'power2.inOut'};
+// 1) glide to the closed laptop  2) lid opens, boot screen runs  3) dive into the screen -> OS
+tl.to(zo,{v:0,duration:1,ease:'power2.inOut'},LAST+2.0).to(cp,Object.assign({duration:1.1},near),LAST+2.0)
+ .to(lg.rotation,{x:-.28,duration:.7,ease:'power2.out'},OST-2.1).to(ls,{v:1,duration:.3},OST-1.8).to(bp,{v:1,duration:.7,ease:'none'},OST-1.7)
+ .to(cp,{px:sP.x+sN.x*.42,py:sP.y+sN.y*.42,pz:sP.z+sN.z*.42,tx:sP.x,ty:sP.y,tz:sP.z,duration:.9,ease:'power3.in'},OST-1.0)
+ .to('#osfl',{opacity:1,duration:.3,ease:'none'},OST-.35)
+// 4) after the OS: back out, the lid closes on "Jaxon's PC", then the page carries on
+ .to('#osfl',{opacity:0,duration:.3,ease:'none'},OST+.3).to(cp,Object.assign({duration:.9},near),OST+.3)
+ .to(ls,{v:0,duration:.3},OST+1.0).to(lg.rotation,{x:1.5708,duration:.7,ease:'power2.in'},OST+1.0)
+// 5) once the lid is shut the room brightens and the rest of the page continues in the light theme
+ .to(lv,{v:1,duration:.7,ease:'power1.inOut',onUpdate:thm},OST+1.8)
+ .to('#gl',{opacity:0,duration:.5},END-.5).to({},{duration:.01},END);
+var lastT=null;function thm(){var t=lv.v>.5?'light':'dark';if(t!=lastT){lastT=t;document.documentElement.dataset.theme=t;dispatchEvent(new Event('themechange'))}}
 ScrollTrigger.create({trigger:'#man',start:'top bottom',onEnter:function(){vis=false},onLeaveBack:function(){vis=true}});
 document.querySelectorAll('#mode button').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('#mode button').forEach(function(x){x.classList.toggle('on',x==b)});gsap.to(surf,{v:+b.dataset.m,duration:1.1,ease:'power2.inOut'})})});
 /* hero intro + preloader */
 gsap.set('.hero h1 .ln span',{yPercent:110});gsap.set('.hero .meta,.hero .foot,.nav',{opacity:0});
-var pn=document.getElementById('pn'),pc={v:0},msgs=['Booting rack','Mounting bays','Linking nodes','Online'];
-gsap.to(pc,{v:100,duration:2.6,ease:'power2.inOut',onUpdate:function(){var v=Math.round(pc.v);pn.textContent=('00'+v).slice(-3);document.getElementById('pb').style.scale=(v/100)+' 1';document.getElementById('pt').textContent=msgs[Math.min(3,Math.floor(v/26))]},
- onComplete:function(){gsap.timeline().to('#pre',{yPercent:-100,duration:1.1,ease:'expo.inOut'}).to('.hero h1 .ln span',{yPercent:0,duration:1.4,stagger:.12,ease:'expo.out'},'-=.5').to('.hero .meta,.hero .foot,.nav',{opacity:1,duration:1},'-=.9').set('#pre',{display:'none'})}});
+// no preloader: the wordmark rises in straight away
+gsap.timeline({delay:.1}).from('#intro .il,#intro .eye',{yPercent:60,opacity:0,duration:1.2,stagger:.05,ease:'expo.out'}).to('.hero h1 .ln span',{yPercent:0,duration:1.4,stagger:.12,ease:'expo.out'},'-=.5').to('.hero .meta,.hero .foot,.nav',{opacity:1,duration:1},'-=.9');
 /* split headings */
 function splitW(el){var h=el.innerHTML.replace(/<span class="ser"><i>([^<]*)<\/i><\/span>/g,'§$1§');var out='',ser=false;h.split(/(\s+)/).forEach(function(w){if(!w.trim()){out+=' ';return}var s=w.indexOf('§')>-1,e=w.lastIndexOf('§')>0;if(s)ser=true;var c=w.replace(/§/g,'');out+='<span class="wd"><span'+(ser?' class="ser" style="font-style:italic;color:var(--ac)"':'')+'>'+c+'</span></span>';if(e||(s&&w.split('§').length>2))ser=false});el.innerHTML=out}
 document.querySelectorAll('.hd').forEach(function(h){splitW(h);gsap.from(h.querySelectorAll('.wd>span'),{yPercent:110,duration:1.2,stagger:.07,ease:'expo.out',scrollTrigger:{trigger:h,start:'top 85%'}})});
@@ -307,14 +475,37 @@ gsap.from('.wmx',{yPercent:40,opacity:0,duration:1.6,ease:'expo.out',scrollTrigg
 // marquee speed on scroll
 var mqs=document.querySelectorAll('.mq .t');lenis.on('scroll',function(e){var v=Math.min(4,1+Math.abs(e.velocity)*.25);mqs.forEach(function(m){m.style.animationDuration=(40/v)+'s'})});
 // cursor + preview + magnetic
-var cur=document.getElementById('cur'),cxq=gsap.quickTo(cur,'x',{duration:.2}),cyq=gsap.quickTo(cur,'y',{duration:.2}),pv=document.getElementById('pv'),pxq=gsap.quickTo(pv,'x',{duration:.5,ease:'power3'}),pyq=gsap.quickTo(pv,'y',{duration:.5,ease:'power3'});
-addEventListener('mousemove',function(e){cur.style.opacity=1;cxq(e.clientX);cyq(e.clientY);pxq(e.clientX+30);pyq(e.clientY-90)});
-document.querySelectorAll('#wl a').forEach(function(a){a.addEventListener('mouseenter',function(){pv.style.background=a.dataset.c;document.getElementById('pvi').textContent=a.dataset.t;gsap.to(pv,{scale:1,opacity:1,duration:.4,ease:'expo.out'})});a.addEventListener('mouseleave',function(){gsap.to(pv,{scale:0,opacity:0,duration:.3})})});
+var cur=document.getElementById('cur'),cxq=gsap.quickTo(cur,'x',{duration:.2}),cyq=gsap.quickTo(cur,'y',{duration:.2});
+addEventListener('mousemove',function(e){cur.style.opacity=1;cxq(e.clientX);cyq(e.clientY)});
 document.querySelectorAll('a,button').forEach(function(a){a.addEventListener('mouseenter',function(){gsap.to(cur,{scale:3,duration:.3})});a.addEventListener('mouseleave',function(){gsap.to(cur,{scale:1,duration:.3})})});
 var mb=document.getElementById('mb'),mbx=gsap.quickTo(mb,'x',{duration:.4,ease:'power3'}),mby=gsap.quickTo(mb,'y',{duration:.4,ease:'power3'});
 mb.addEventListener('mousemove',function(e){var r=mb.getBoundingClientRect();mbx((e.clientX-r.left-r.width/2)*.3);mby((e.clientY-r.top-r.height/2)*.4)});mb.addEventListener('mouseleave',function(){mbx(0);mby(0)});
 function clk(){try{document.getElementById('clk').textContent=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Singapore',hour:'2-digit',minute:'2-digit'})+' SGT'}catch(e){}}clk();setInterval(clk,30000);
 addEventListener('load',function(){ScrollTrigger.refresh()});
+})();
+/* particle wordmark in the footer: dots fly in to spell FROGINEER, scatter from the cursor; colour follows the theme text colour */
+(function(){
+var c=document.getElementById('pwc');if(!c)return;
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,x=c.getContext('2d'),W,H,d,pts=[],tg=[],active=false,mx=-1e5,my=-1e5,col;
+function build(){var r=c.getBoundingClientRect();d=Math.min(devicePixelRatio||1,2);W=c.width=Math.max(1,r.width*d);H=c.height=Math.max(1,r.height*d);
+ col=getComputedStyle(document.documentElement).getPropertyValue('--fg').trim()||'#fff';
+ var o=document.createElement('canvas');o.width=W;o.height=H;var g=o.getContext('2d'),fs=H*.95;g.font='800 '+fs+'px "Inter Tight",sans-serif';var mw=g.measureText('FROGINEER').width;if(mw>W*.98)fs*=W*.98/mw;
+ g.font='800 '+fs+'px "Inter Tight",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('FROGINEER',W/2,H/2);
+ var data=g.getImageData(0,0,W,H).data,step=Math.max(4,Math.round(W/260));tg=[];
+ for(var yy=0;yy<H;yy+=step)for(var xx=0;xx<W;xx+=step)if(data[(yy*W+xx)*4+3]>140)tg.push([xx+(Math.random()-.5)*step*.5,yy+(Math.random()-.5)*step*.5]);
+ pts=tg.map(function(t){return reduce?{x:t[0],y:t[1],vx:0,vy:0,s:Math.random()*.6+.7}:{x:Math.random()*W,y:Math.random()*H*2-H*.5,vx:0,vy:0,s:Math.random()*.6+.7}})}
+c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();mx=(e.clientX-r.left)*d;my=(e.clientY-r.top)*d});
+c.addEventListener('pointerleave',function(){mx=my=-1e5});
+new IntersectionObserver(function(es){es.forEach(function(e){active=e.isIntersecting;if(e.isIntersecting&&!reduce)pts.forEach(function(p){p.x=Math.random()*W;p.y=Math.random()*H*2-H*.5})})},{threshold:.2}).observe(c);
+function frame(){if(active||reduce){x.clearRect(0,0,W,H);x.fillStyle=col;var sz=Math.max(2,W/420);
+ for(var i=0;i<pts.length;i++){var p=pts[i],t=tg[i];
+  if(!reduce){p.vx+=(t[0]-p.x)*.02;p.vy+=(t[1]-p.y)*.02;var dx=p.x-mx,dy=p.y-my,dd=dx*dx+dy*dy,R=70*d;if(dd<R*R){var f=(1-Math.sqrt(dd)/R)*6;p.vx+=dx/Math.sqrt(dd+1)*f;p.vy+=dy/Math.sqrt(dd+1)*f}
+   p.vx*=.84;p.vy*=.84;p.x+=p.vx;p.y+=p.vy}
+  x.fillRect(p.x,p.y,sz*p.s,sz*p.s)}}
+ if(!reduce)requestAnimationFrame(frame)}
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){build();requestAnimationFrame(frame)});
+var rt;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(build,200)});
+addEventListener('themechange',function(){col=getComputedStyle(document.documentElement).getPropertyValue('--fg').trim()||col});
 })();
 </script>
 
