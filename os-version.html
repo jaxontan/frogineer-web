@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Frogineer OS</title>
+<meta name="description" content="Frogineer: freelance consulting for NAS storage, AI and cloud, plus websites. An interactive desktop portfolio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: a retro desktop OS. Menu bar on top, icons on the left, chunky draggable windows, a taskbar at the bottom.
+   Single committed look (warm beige desktop, ink outlines, hard shadows), not theme-switching. */
+:root{
+  color-scheme:light;
+  --desk:#E6E2D3; --dot:#CFCAB6; --paper:#FCFBF6; --ink:#161513; --muted:#5F5C52;
+  --green:#2E9E57; --yellow:#F5C430; --blue:#2B57E6; --red:#EC5A2C; --pink:#F3A9C4;
+  --term:#171614; --term-fg:#F4E9C8;
+  --f-chunk:"Unbounded", "Arial Black", Impact, sans-serif;
+  --f-tech:"Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-code:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --shadow:4px 4px 0 var(--ink);
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--f-tech);font-size:15px;line-height:1.5;overflow:hidden;
+  background-image:radial-gradient(var(--dot) 1.2px,transparent 1.4px);background-size:22px 22px}
+button{font:inherit;color:inherit}
+a{color:inherit}
+.mono{font-family:var(--f-code)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* ---------- menu bar ---------- */
+.menubar{position:fixed;inset:0 0 auto;z-index:900;height:calc(40px + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px);
+  padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px));
+  background:var(--paper);border-bottom:2px solid var(--ink);display:flex;align-items:center;gap:6px}
+.brand{display:flex;align-items:center;gap:8px;border:0;background:none;padding:4px 8px;border-radius:6px;cursor:pointer;font:800 14px var(--f-chunk);letter-spacing:-.01em}
+.brand:hover{background:var(--yellow)}
+.brand svg{width:26px;height:26px}
+.menus{display:flex;gap:2px;overflow:hidden;min-width:0}
+.menus button{border:0;background:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-weight:500;white-space:nowrap}
+.menus button:hover{background:var(--desk)}
+.mb-right{margin-left:auto;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.status{display:flex;align-items:center;gap:7px;font:500 13px var(--f-tech);padding:4px 10px;border:2px solid var(--ink);border-radius:999px;background:#DFF2E5}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 var(--green);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(46,158,87,0)}100%{box-shadow:0 0 0 0 rgba(46,158,87,0)}}
+.qv{border:2px solid var(--ink);background:var(--yellow);padding:4px 10px;border-radius:6px;font:700 13px var(--f-tech);cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.qv:active{transform:translate(2px,2px);box-shadow:none}
+.clock{font:700 13px var(--f-code);font-variant-numeric:tabular-nums}
+@media (max-width:860px){.menus{display:none}}
+@media (max-width:560px){.status span,.clock{display:none}}
+
+/* ---------- desktop ---------- */
+.desktop{position:fixed;inset:calc(40px + env(safe-area-inset-top,0px)) 0 calc(52px + env(safe-area-inset-bottom,0px)) 0;overflow:hidden}
+.wall{position:absolute;inset:auto 0 -2vw 0;pointer-events:none;user-select:none;display:grid;justify-items:center}
+.wall b{font:900 clamp(64px,15.5vw,250px)/.85 var(--f-chunk);letter-spacing:-.05em;color:transparent;-webkit-text-stroke:2px rgba(22,21,19,.16);white-space:nowrap;transition:transform .25s ease-out}
+.pad{position:absolute;border-radius:50%;background:rgba(46,158,87,.13);border:2px solid rgba(46,158,87,.25);pointer-events:none;transition:transform .3s ease-out}
+.icons{position:absolute;top:18px;left:max(14px,env(safe-area-inset-left,0px));display:grid;grid-auto-flow:column;grid-template-rows:repeat(auto-fill,98px);gap:6px 10px;height:calc(100% - 30px);align-content:start}
+.icon{all:unset;box-sizing:border-box;width:92px;display:grid;justify-items:center;gap:6px;padding:8px 4px;border-radius:8px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent}
+.icon svg{width:48px;height:48px;filter:drop-shadow(3px 3px 0 var(--ink));transition:transform .15s}
+.icon span{font:600 12.5px/1.2 var(--f-tech);padding:2px 6px;border-radius:4px}
+.icon:hover svg{transform:translateY(-3px) rotate(-4deg)}
+.icon.sel span,.icon:focus-visible span{background:var(--blue);color:#fff}
+.icon:focus-visible{outline:none}
+.hop svg{animation:hop .55s cubic-bezier(.3,1.8,.5,1)}
+@keyframes hop{0%{transform:translateY(0)}40%{transform:translateY(-26px) rotate(-12deg) scale(1.1,.92)}100%{transform:translateY(0)}}
+.drives{position:absolute;top:18px;right:max(14px,env(safe-area-inset-right,0px));display:grid;gap:6px}
+@media (max-width:700px){.drives{display:none}}
+
+/* ---------- windows ---------- */
+.win{position:absolute;background:var(--paper);border:2px solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow);display:flex;flex-direction:column;
+  min-width:280px;max-width:calc(100vw - 24px);max-height:calc(100% - 20px);transform-origin:var(--ox,50%) var(--oy,50%)}
+.win.opening{animation:pop .5s cubic-bezier(.2,1.6,.4,1) both}
+.win.closing{animation:shrink .22s ease-in both}
+.win.focused{box-shadow:7px 7px 0 var(--ink)}
+@keyframes pop{0%{transform:scale(.25) rotate(-6deg);opacity:0}60%{opacity:1}100%{transform:none}}
+@keyframes shrink{to{transform:scale(.3) rotate(5deg);opacity:0}}
+.bar{display:flex;align-items:center;gap:10px;padding:7px 8px 7px 12px;border-bottom:2px solid var(--ink);background:var(--tb,var(--yellow));border-radius:8px 8px 0 0;cursor:grab;user-select:none;touch-action:none}
+.bar:active{cursor:grabbing}
+.bar .t{font:800 13px var(--f-chunk);letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .t small{font:400 12px var(--f-code);opacity:.7;margin-left:6px}
+.wbtn{width:24px;height:22px;border:2px solid var(--ink);border-radius:5px;background:var(--paper);display:grid;place-items:center;cursor:pointer;padding:0;font:700 13px/1 var(--f-code)}
+.wbtn:hover{background:var(--ink);color:var(--paper)}
+.body{overflow:auto;padding:18px;flex:1;min-height:0}
+.dark .body{background:var(--term);color:var(--term-fg);border-radius:0 0 8px 8px}
+
+/* phones: windows become sheets */
+@media (max-width:700px){
+  .win{left:8px!important;right:8px;top:8px!important;width:auto!important;max-width:none;height:auto;max-height:calc(100% - 16px)}
+  .bar{cursor:default}
+  .win.under{top:var(--under,8px)!important;max-height:calc(100% - var(--under,8px) - 8px)}
+  .icons{grid-auto-flow:row;grid-template-columns:repeat(auto-fill,88px);grid-template-rows:none;height:auto;right:14px;justify-content:center}
+  .icon{width:88px}
+}
+
+/* ---------- shared content ---------- */
+h1,h2,h3{margin:0;text-wrap:balance}
+.chunk{font-family:var(--f-chunk);font-weight:900;letter-spacing:-.035em;line-height:.98}
+.label{font:700 11px var(--f-code);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+p{margin:0;max-width:62ch}
+.btn{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--ink);border-radius:8px;padding:9px 14px;font:700 14px var(--f-tech);cursor:pointer;background:var(--paper);box-shadow:3px 3px 0 var(--ink);text-decoration:none;transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:none}
+.btn.g{background:var(--green);color:#fff}.btn.y{background:var(--yellow)}.btn.b{background:var(--blue);color:#fff}.btn.r{background:var(--red);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 12px var(--f-code);border:1.5px solid var(--ink);border-radius:999px;padding:2px 9px;background:var(--paper)}
+.example{font:700 10px var(--f-code);letter-spacing:.08em;background:var(--pink);border:1.5px solid var(--ink);border-radius:4px;padding:1px 6px;text-transform:uppercase}
+
+/* welcome */
+.hello{display:grid;gap:16px}
+.hello h1{font-size:clamp(34px,4.6vw,56px)}
+.hello h1 em{font-style:normal;background:var(--green);color:#fff;padding:0 .12em;border-radius:6px;display:inline-block;transform:rotate(-2deg)}
+.hello .lede{font-size:17px}
+.tip{font:400 12.5px var(--f-code);color:var(--muted);border-top:2px dashed var(--dot);padding-top:12px}
+.tip kbd{font:700 11px var(--f-code);border:1.5px solid var(--ink);border-radius:4px;padding:0 5px;background:var(--desk)}
+
+/* services */
+.svc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.svc{grid-template-columns:1fr}}
+.svc article{border:2px solid var(--ink);border-radius:8px;padding:16px;display:grid;gap:10px;align-content:start;background:var(--c);transition:transform .2s cubic-bezier(.2,1.6,.4,1)}
+.svc article:hover{transform:rotate(-1deg) translateY(-3px)}
+.svc h3{font:800 18px/1.1 var(--f-chunk);letter-spacing:-.02em}
+.svc .hook{font-weight:700}
+.svc ul{margin:0;padding-left:18px;display:grid;gap:3px}
+.svc .meta{font:400 12px var(--f-code);border-top:1.5px solid var(--ink);padding-top:8px}
+
+/* projects explorer */
+.explorer{display:grid;grid-template-columns:140px minmax(0,1fr);height:100%}
+.explorer nav{border-right:2px solid var(--ink);padding:12px 8px;display:grid;gap:2px;align-content:start;background:var(--desk)}
+.explorer nav button{all:unset;cursor:pointer;padding:6px 10px;border-radius:6px;font:500 14px var(--f-tech);display:flex;justify-content:space-between}
+.explorer nav button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.explorer nav button:focus-visible{outline:3px solid var(--blue)}
+.files{padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;align-content:start;overflow:auto}
+.file{all:unset;cursor:pointer;display:grid;gap:8px;border:2px solid var(--ink);border-radius:8px;background:var(--paper);overflow:hidden;transition:transform .2s cubic-bezier(.2,1.6,.4,1),box-shadow .2s}
+.file:hover,.file:focus-visible{transform:translate(-2px,-3px) rotate(-1deg);box-shadow:4px 5px 0 var(--ink)}
+.file .art{aspect-ratio:16/10;border-bottom:2px solid var(--ink);max-width:100%}
+.file .fm{padding:0 10px 10px;display:grid;gap:4px}
+.file .fn{font:700 12px var(--f-code);word-break:break-all}
+.file .ft{font:600 14px/1.25 var(--f-tech)}
+@media (max-width:700px){.explorer{grid-template-columns:1fr}.explorer nav{display:flex;overflow-x:auto;border-right:0;border-bottom:2px solid var(--ink)}}
+.case{display:grid;gap:16px}
+.case .art{height:150px;border:2px solid var(--ink);border-radius:8px}
+.case h2{font:800 24px/1.1 var(--f-chunk);letter-spacing:-.02em}
+.case dl{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px 16px;margin:0}
+.case dt{font:700 11px var(--f-code);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.case dd{margin:0}
+@media (max-width:520px){.case dl{grid-template-columns:1fr;gap:2px}.case dd{margin-bottom:10px}}
+
+/* about */
+.doc{font:400 15px/1.65 var(--f-tech);display:grid;gap:14px}
+.doc h2{font:800 22px var(--f-chunk);letter-spacing:-.02em}
+.doc ol{margin:0;padding-left:20px;display:grid;gap:6px}
+
+/* storage / availability */
+.bays{display:grid;gap:10px}
+.bay{display:grid;grid-template-columns:16px minmax(0,1fr) auto;gap:12px;align-items:center;border:2px solid var(--ink);border-radius:8px;padding:10px 12px;background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(22,21,19,.05) 6px 8px),var(--paper)}
+.led{width:12px;height:12px;border-radius:50%;border:2px solid var(--ink);background:var(--led)}
+.led.blink{animation:blink .9s steps(2) infinite}
+@keyframes blink{50%{background:var(--paper)}}
+.bay b{font:700 14px var(--f-tech)}
+.bay small{display:block;font:400 12px var(--f-code);color:var(--muted)}
+.meter{height:16px;border:2px solid var(--ink);border-radius:5px;background:var(--paper);overflow:hidden}
+.meter i{display:block;height:100%;background:repeating-linear-gradient(45deg,var(--green) 0 8px,#2a8a4d 8px 16px);width:0;transition:width 1.4s cubic-bezier(.2,1,.3,1)}
+
+/* terminal */
+.term{font:400 13.5px/1.55 var(--f-code);display:flex;flex-direction:column;min-height:100%}
+.term .out{white-space:pre-wrap;word-break:break-word}
+.term .p{color:var(--yellow)}
+.term .ok{color:#7FD99C}.term .hi{color:var(--pink)}.term .dim{color:#9C957F}
+.term form{display:flex;gap:8px;margin-top:4px}
+.term input{flex:1;min-width:0;background:transparent;border:0;color:var(--term-fg);font:inherit;outline:none;caret-color:var(--yellow)}
+
+/* contact */
+.mail{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:2px solid var(--ink);border-radius:8px;padding:10px 12px;background:var(--desk)}
+.mail code{font:700 16px var(--f-code);user-select:all;overflow-wrap:anywhere}
+
+/* trash */
+.trashlist{display:grid;gap:6px;font:400 13px var(--f-code)}
+.trashlist div{display:flex;gap:8px;align-items:center;padding:6px 8px;border:1.5px dashed var(--ink);border-radius:6px;transition:transform .5s cubic-bezier(.6,-0.4,.7,0),opacity .5s}
+.trashlist.gone div{transform:translateY(60px) rotate(25deg) scale(.4);opacity:0}
+
+/* ---------- taskbar ---------- */
+.taskbar{position:fixed;inset:auto 0 0;z-index:900;height:calc(52px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px));
+  background:var(--paper);border-top:2px solid var(--ink);display:flex;align-items:center;gap:8px}
+.start{display:flex;align-items:center;gap:8px;border:2px solid var(--ink);border-radius:8px;background:var(--green);color:#fff;padding:5px 12px 5px 8px;font:800 13px var(--f-chunk);cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.start svg{width:22px;height:22px}
+.start:active{transform:translate(2px,2px);box-shadow:none}
+.tasks{display:flex;gap:6px;overflow-x:auto;min-width:0;flex:1;scrollbar-width:none}
+.task{border:2px solid var(--ink);border-radius:6px;padding:4px 10px;background:var(--desk);font:600 13px var(--f-tech);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.task i{width:10px;height:10px;border-radius:3px;border:1.5px solid var(--ink);background:var(--c)}
+.task.on{background:var(--paper);box-shadow:inset 0 -3px 0 var(--ink)}
+.task.min{opacity:.6}
+
+/* ---------- boot ---------- */
+.boot{position:fixed;inset:0;z-index:2000;background:var(--term);color:var(--term-fg);font:400 14px/1.7 var(--f-code);
+  padding:calc(28px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) 28px max(20px,env(safe-area-inset-left,0px));cursor:pointer;transition:opacity .35s, transform .35s}
+.boot.done{opacity:0;transform:scale(1.04);pointer-events:none}
+.boot .ok{color:#7FD99C}.boot .skip{position:absolute;right:max(20px,env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));color:#9C957F}
+
+/* ---------- quick view ---------- */
+.quick{display:none}
+body.qmode{overflow:auto}
+body.qmode .desktop,body.qmode .taskbar{display:none}
+body.qmode .quick{display:block;padding:calc(64px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px))}
+.quick .in{max-width:980px;margin:0 auto;display:grid;gap:56px}
+.quick section{display:grid;gap:18px}
+.quick .hero h1{font-size:clamp(40px,7vw,84px)}
+.quick .projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.quick .pcard{border:2px solid var(--ink);border-radius:8px;background:var(--paper);overflow:hidden;box-shadow:var(--shadow)}
+.quick .pcard .art{height:110px;border-bottom:2px solid var(--ink)}
+.quick .pcard div.m{padding:12px;display:grid;gap:6px}
+
+/* confetti */
+.confetto{position:fixed;z-index:3000;width:10px;height:14px;border:1.5px solid var(--ink);pointer-events:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- BOOT -->
+<div class="boot" id="boot" role="status" aria-live="polite"><div id="bootLines"></div><div class="skip">click to skip</div></div>
+
+<!-- MENU BAR -->
+<header class="menubar">
+  <button class="brand" id="brandBtn" aria-label="Frogineer: make the icons hop">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#frog"/></svg>Frogineer
+  </button>
+  <nav class="menus" aria-label="Open a window">
+    <button data-open="projects">Projects</button>
+    <button data-open="services">Services</button>
+    <button data-open="about">About</button>
+    <button data-open="terminal">Terminal</button>
+    <button data-open="contact">Contact</button>
+  </nav>
+  <div class="mb-right">
+    <div class="status"><i></i><span>Taking new projects</span></div>
+    <button class="qv" id="qvBtn" aria-pressed="false">Quick view</button>
+    <span class="clock" id="clock">--:--</span>
+  </div>
+</header>
+
+<!-- DESKTOP -->
+<main class="desktop" id="desk">
+  <div class="pad" style="width:220px;height:220px;right:12%;top:30%" data-depth="18"></div>
+  <div class="pad" style="width:120px;height:120px;right:30%;top:58%" data-depth="30"></div>
+  <div class="pad" style="width:70px;height:70px;left:22%;top:66%" data-depth="40"></div>
+  <div class="wall" aria-hidden="true"><b id="wallText">FROGINEER</b></div>
+  <div class="icons" id="icons"></div>
+  <div class="drives" id="drives"></div>
+</main>
+
+<!-- QUICK VIEW (plain page for busy clients) -->
+<div class="quick" id="quick"></div>
+
+<!-- TASKBAR -->
+<footer class="taskbar">
+  <button class="start" id="startBtn" aria-label="Open the welcome window"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#frog"/></svg>Start</button>
+  <div class="tasks" id="tasks"></div>
+</footer>
+
+<!-- SVG sprites: chunky outlined icons -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Frog mark: a frog face that is also a 2-bay NAS box (eyes = drive LEDs, mouth = drive slot) -->
+    <symbol id="frog" viewBox="0 0 64 64">
+      <circle cx="20" cy="18" r="11" fill="#2E9E57" stroke="#161513" stroke-width="3.5"/>
+      <circle cx="44" cy="18" r="11" fill="#2E9E57" stroke="#161513" stroke-width="3.5"/>
+      <rect x="6" y="20" width="52" height="36" rx="12" fill="#2E9E57" stroke="#161513" stroke-width="3.5"/>
+      <circle cx="20" cy="18" r="5" fill="#FCFBF6" stroke="#161513" stroke-width="2.5"/><circle cx="21" cy="19" r="2.2" fill="#161513"/>
+      <circle cx="44" cy="18" r="5" fill="#FCFBF6" stroke="#161513" stroke-width="2.5"/><circle cx="45" cy="19" r="2.2" fill="#161513"/>
+      <rect x="18" y="38" width="28" height="6" rx="3" fill="#161513"/>
+      <circle cx="50" cy="48" r="2.5" fill="#F5C430" stroke="#161513" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 48 48"><path d="M4 12a3 3 0 0 1 3-3h11l4 5h19a3 3 0 0 1 3 3v21a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z" fill="#F5C430" stroke="#161513" stroke-width="3" stroke-linejoin="round"/><path d="M4 19h40" stroke="#161513" stroke-width="3"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 48 48"><rect x="11" y="11" width="26" height="26" rx="4" fill="#2B57E6" stroke="#161513" stroke-width="3"/><rect x="18" y="18" width="12" height="12" rx="2" fill="#FCFBF6" stroke="#161513" stroke-width="2.5"/><path d="M17 4v7M24 4v7M31 4v7M17 37v7M24 37v7M31 37v7M4 17h7M4 24h7M4 31h7M37 17h7M37 24h7M37 31h7" stroke="#161513" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 48 48"><path d="M10 4h20l8 8v30a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="#FCFBF6" stroke="#161513" stroke-width="3" stroke-linejoin="round"/><path d="M30 4v8h8" fill="#F3A9C4" stroke="#161513" stroke-width="3" stroke-linejoin="round"/><path d="M15 21h18M15 27h18M15 33h11" stroke="#161513" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-term" viewBox="0 0 48 48"><rect x="4" y="7" width="40" height="34" rx="4" fill="#161513" stroke="#161513" stroke-width="3"/><path d="M12 19l7 6-7 6" fill="none" stroke="#F5C430" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 32h12" stroke="#FCFBF6" stroke-width="3.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 48 48"><rect x="4" y="10" width="40" height="28" rx="3" fill="#EC5A2C" stroke="#161513" stroke-width="3"/><path d="M5 12l19 15 19-15" fill="none" stroke="#161513" stroke-width="3" stroke-linejoin="round"/></symbol>
+    <symbol id="i-nas" viewBox="0 0 48 48"><rect x="8" y="4" width="32" height="40" rx="4" fill="#2E9E57" stroke="#161513" stroke-width="3"/><rect x="13" y="10" width="22" height="7" rx="2" fill="#FCFBF6" stroke="#161513" stroke-width="2.5"/><rect x="13" y="21" width="22" height="7" rx="2" fill="#FCFBF6" stroke="#161513" stroke-width="2.5"/><circle cx="17" cy="37" r="2.6" fill="#F5C430" stroke="#161513" stroke-width="1.5"/><circle cx="25" cy="37" r="2.6" fill="#F5C430" stroke="#161513" stroke-width="1.5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 48 48"><path d="M10 14h28l-2.5 27a3 3 0 0 1-3 3h-17a3 3 0 0 1-3-3z" fill="#CFCAB6" stroke="#161513" stroke-width="3" stroke-linejoin="round"/><path d="M6 13h36M19 8h10" stroke="#161513" stroke-width="3.5" stroke-linecap="round"/><path d="M20 21v15M28 21v15" stroke="#161513" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-disk" viewBox="0 0 48 48"><rect x="4" y="12" width="40" height="24" rx="5" fill="var(--dc,#F5C430)" stroke="#161513" stroke-width="3"/><path d="M10 24h18" stroke="#161513" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="24" r="3" fill="#FCFBF6" stroke="#161513" stroke-width="2"/></symbol>
+  </defs>
+</svg>
+
+<script>
+/* ================= CONTENT (edit me) ================= */
+const ME = {
+  name: "J",
+  email: "hello@frogineer.dev",          // placeholder: swap for your real address
+  links: [{n:"LinkedIn",u:"#"},{n:"GitHub",u:"#"}],
+  tz: "Asia/Singapore"
+};
+const SERVICES = [
+  {id:"nas", c:"#DCEFE2", t:"NAS & storage", hook:"Storage that doesn't fail at 2 a.m.",
+   items:["Plan, deploy and migrate NAS (Synology, QNAP, TrueNAS)","RAID, capacity and growth planning","Snapshots and 3-2-1 backups that are actually tested","Safe remote access and permissions"], meta:"Typical: 1 to 3 weeks"},
+  {id:"ai", c:"#FBEFC4", t:"AI solutions", hook:"AI that works on your own data.",
+   items:["Private document search (RAG) over your NAS and cloud files","Assistants and workflow automation for your team","Choosing on-prem vs cloud models for cost and privacy"], meta:"Typical: 2 to 6 weeks"},
+  {id:"cloud", c:"#DCE4FB", t:"Cloud", hook:"Cloud without the surprise bill.",
+   items:["Architecture and migration on AWS, Azure or GCP","Hybrid NAS-to-cloud sync and disaster recovery","Cost and security reviews with a written action list"], meta:"Typical: 1 to 4 weeks"},
+  {id:"web", c:"#FAE0E8", t:"Web & interfaces", hook:"Websites like the one you're clicking.",
+   items:["Design and front-end build for portfolios and products","Dashboards for the systems I set up","Motion, 3D and interaction when it helps"], meta:"Typical: 2 to 5 weeks"}
+];
+const PROJECTS = [
+  {id:"studio-nas", file:"studio-nas-rebuild/", cat:"nas", art:"stripes", c1:"#2E9E57", c2:"#F5C430", ex:true,
+   t:"Hybrid NAS for a 40-person design studio", prob:"Project files lived on four desktop drives and one cloud folder. A failed disk cost them three days.",
+   did:"Two-bay-per-site NAS with snapshots every hour, nightly off-site sync to cloud object storage, and one shared folder structure.", res:"Restoring a deleted project now takes minutes instead of days.", stack:["TrueNAS","ZFS","Backblaze B2","Tailscale"]},
+  {id:"private-ai", file:"private-ai-search/", cat:"ai", art:"dots", c1:"#F5C430", c2:"#2B57E6", ex:true,
+   t:"Private AI search over 2 TB of contracts", prob:"A legal team needed to find clauses across years of PDFs without sending data to a public chatbot.",
+   did:"Indexed documents straight from their NAS into a local vector store, with a simple chat UI and source links on every answer.", res:"Lookups that took an afternoon now take seconds, and data never leaves the office.", stack:["Python","Postgres + pgvector","Local LLM","React"]},
+  {id:"cloud-lean", file:"cloud-cost-cut/", cat:"cloud", art:"rings", c1:"#2B57E6", c2:"#F3A9C4", ex:true,
+   t:"Leaner cloud setup for a SaaS backend", prob:"Monthly cloud spend had doubled in a year with no one sure why.",
+   did:"Mapped every resource, right-sized databases, moved cold files to cheaper storage tiers and added budget alerts.", res:"A clear monthly bill with alerts before any surprise.", stack:["AWS","Terraform","CloudWatch"]},
+  {id:"clinic-dr", file:"clinic-disaster-recovery/", cat:"nas", art:"grid", c1:"#EC5A2C", c2:"#2E9E57", ex:true,
+   t:"Disaster recovery plan for a small clinic", prob:"Patient records were on one server in a cupboard.",
+   did:"Replicated NAS to a second site, encrypted cloud copy, and a one-page recovery runbook staff can follow.", res:"A tested recovery drill, done together with the team.", stack:["Synology","Hyper Backup","Azure Blob"]},
+  {id:"ops-dash", file:"storage-dashboard/", cat:"web", art:"bars", c1:"#F3A9C4", c2:"#161513", ex:true,
+   t:"Live dashboard for a fleet of storage servers", prob:"Admins checked twelve NAS boxes one login at a time.",
+   did:"One web dashboard that shows disk health, capacity trends and failed backups at a glance.", res:"Problems show up on one screen before users notice.", stack:["Node","Prometheus","React","D3"]},
+  {id:"frog-os", file:"frogineer-os/", cat:"web", art:"frog", c1:"#2E9E57", c2:"#FCFBF6", ex:false,
+   t:"Frogineer OS, this website", prob:"A consultant site that proves the skills instead of listing them.",
+   did:"A playful desktop you can explore, with a Quick view for people in a hurry.", res:"You're using it right now.", stack:["HTML","CSS","Vanilla JS"]}
+];
+const CATS = [{id:"all",n:"All"},{id:"nas",n:"NAS"},{id:"ai",n:"AI"},{id:"cloud",n:"Cloud"},{id:"web",n:"Web"}];
+
+/* ================= helpers ================= */
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isPhone = ()=>innerWidth<=700;
+function art(p){ // small generative thumbnails, no images needed
+  const a=p.c1,b=p.c2;
+  return {stripes:`repeating-linear-gradient(-45deg,${a} 0 14px,${b} 14px 28px)`,
+          dots:`radial-gradient(${b} 28%,transparent 30%) 0 0/22px 22px,${a}`,
+          rings:`repeating-radial-gradient(circle at 30% 120%,${a} 0 12px,${b} 12px 24px)`,
+          grid:`linear-gradient(${b} 3px,transparent 3px) 0 0/24px 24px,linear-gradient(90deg,${b} 3px,transparent 3px) 0 0/24px 24px,${a}`,
+          bars:`linear-gradient(90deg,${a} 0 18%,transparent 18% 24%,${a} 24% 36%,transparent 36% 42%,${a} 42% 70%,transparent 70% 76%,${a} 76%) bottom/100% 60% no-repeat,${b}`,
+          frog:`radial-gradient(circle at 35% 45%,${b} 0 9%,#161513 9% 12%,transparent 12%),radial-gradient(circle at 65% 45%,${b} 0 9%,#161513 9% 12%,transparent 12%),${a}`}[p.art];
+}
+
+/* ================= windows ================= */
+const WINS = {
+  welcome:{t:"welcome.app", tb:"var(--yellow)", w:580, x:.17, y:.07, html:()=>`
+    <div class="hello">
+      <span class="label">Freelance consultant · NAS · AI · Cloud · Web</span>
+      <h1 class="chunk">Hi, I'm ${esc(ME.name)}.<br>I'm the <em>Frogineer</em>.</h1>
+      <p class="lede">I design and build storage, AI and cloud systems for teams that need their data safe, smart and reachable from anywhere. Then I make the screens on top of it a pleasure to use.</p>
+      <div class="row">
+        <button class="btn g" data-open="projects">Open my projects</button>
+        <button class="btn" data-open="services">What I do</button>
+        <button class="btn" data-open="terminal">&gt;_ Terminal</button>
+      </div>
+      <p class="tip">${isPhone()?"Tap icons to open them":"Double-click icons to open them · drag windows by their title bar"} · type <kbd>help</kbd> in the terminal · short on time? press <b>Quick view</b> top right.</p>
+    </div>`},
+  services:{t:"services", sub:"4 items", tb:"var(--blue)", w:720, x:.22, y:.12, html:()=>`
+    <div style="display:grid;gap:16px">
+      <h2 class="chunk" style="font-size:28px">What I can do for you</h2>
+      <div class="svc">${SERVICES.map(s=>`
+        <article style="--c:${s.c}">
+          <h3>${esc(s.t)}</h3>
+          <p class="hook">${esc(s.hook)}</p>
+          <ul>${s.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul>
+          <p class="meta">${esc(s.meta)}</p>
+        </article>`).join("")}</div>
+      <div class="row"><button class="btn r" data-open="contact">Ask about a project</button><button class="btn" data-open="projects">See examples</button></div>
+    </div>`},
+  projects:{t:"projects", sub:"~/work", tb:"var(--yellow)", w:760, h:520, x:.16, y:.06, pad:false, html:()=>`
+    <div class="explorer">
+      <nav aria-label="Filter projects">${CATS.map(c=>`<button data-cat="${c.id}" aria-pressed="${c.id==='all'}">${c.n}<span class="mono">${c.id==='all'?PROJECTS.length:PROJECTS.filter(p=>p.cat===c.id).length}</span></button>`).join("")}</nav>
+      <div class="files"></div>
+    </div>`, init:(w)=>{ const files=$(".files",w);
+      const draw=cat=>{files.innerHTML=PROJECTS.filter(p=>cat==="all"||p.cat===cat).map(p=>`
+        <button class="file" data-case="${p.id}"><div class="art" style="background:${art(p)}"></div>
+        <div class="fm"><span class="fn">${esc(p.file)}</span><span class="ft">${esc(p.t)}</span>${p.ex?'<span><span class="example">Example</span></span>':''}</div></button>`).join("")};
+      draw("all");
+      w.addEventListener("click",e=>{const b=e.target.closest("[data-cat]"); if(!b) return;
+        w.querySelectorAll("[data-cat]").forEach(x=>x.setAttribute("aria-pressed",x===b)); draw(b.dataset.cat)});
+    }},
+  about:{t:"about-me.txt", tb:"var(--pink)", w:520, x:.42, y:.14, html:()=>`
+    <div class="doc">
+      <h2>About ${esc(ME.name)}</h2>
+      <p>I'm a freelance consultant who works where infrastructure meets design. I set up the storage, AI and cloud pieces, write down how they work, and build the interfaces people use every day.</p>
+      <p>Clients hire me when they want one person who can talk to their team, plan the system and ship it.</p>
+      <span class="label">How a project goes</span>
+      <ol>
+        <li><b>Free 20-minute call.</b> You tell me what hurts.</li>
+        <li><b>Written plan and fixed price.</b> No surprises.</li>
+        <li><b>Build, test, hand over.</b> With docs your team can follow.</li>
+      </ol>
+      <span class="label">Toolbox</span>
+      <div class="chips">${["Synology","QNAP","TrueNAS","ZFS","Linux","Docker","AWS","Azure","GCP","Terraform","Python","LLMs + RAG","React","Three.js"].map(x=>`<span class="chip">${x}</span>`).join("")}</div>
+    </div>`},
+  terminal:{t:"terminal", sub:"frog@nas-01", tb:"#9C957F", w:620, h:380, x:.36, y:.30, dark:true, html:()=>`
+    <div class="term"><div class="out" aria-live="polite"></div>
+    <form autocomplete="off"><span class="p">frog@nas-01:~$</span><label class="sr" for="cmd" style="position:absolute;left:-9999px">Command</label><input id="cmd" spellcheck="false" autocapitalize="off"></form></div>`,
+    init:(w)=>termInit(w)},
+  contact:{t:"contact", tb:"var(--red)", w:500, x:.48, y:.20, html:()=>`
+    <div style="display:grid;gap:14px">
+      <h2 class="chunk" style="font-size:30px">Let's talk about your data.</h2>
+      <p>Tell me what you're running today and what's bugging you. I usually reply within one working day.</p>
+      <div class="mail"><code id="mailAddr">${esc(ME.email)}</code><button class="btn y" id="copyMail" style="padding:5px 10px;font-size:13px">Copy</button></div>
+      <div class="row">${ME.links.map(l=>`<a class="btn" href="${l.u}" target="_blank" rel="noopener">${l.n} ↗</a>`).join("")}<button class="btn g" data-open="storage">Check availability</button></div>
+    </div>`},
+  storage:{t:"nas-01 · availability", tb:"var(--green)", w:440, x:.64, y:.36, html:()=>`
+    <div style="display:grid;gap:14px">
+      <p class="label">Project bays this quarter</p>
+      <div class="bays">
+        <div class="bay" style="--led:var(--green)"><span class="led blink"></span><div><b>Bay 1 · Storage project</b><small>in progress</small></div><span class="mono">BUSY</span></div>
+        <div class="bay" style="--led:var(--yellow)"><span class="led blink" style="animation-delay:.3s"></span><div><b>Bay 2 · AI project</b><small>wrapping up soon</small></div><span class="mono">90%</span></div>
+        <div class="bay" style="--led:var(--paper)"><span class="led"></span><div><b>Bay 3 · Empty</b><small>this could be your project</small></div><span class="mono">FREE</span></div>
+        <div class="bay" style="--led:var(--paper)"><span class="led"></span><div><b>Bay 4 · Empty</b><small>this could be your project</small></div><span class="mono">FREE</span></div>
+      </div>
+      <p class="label">Capacity used</p>
+      <div class="meter"><i style="--to:50%"></i></div>
+      <button class="btn r" data-open="contact">Claim a free bay</button>
+    </div>`, init:w=>setTimeout(()=>w.querySelectorAll(".meter i").forEach(i=>i.style.width=i.style.getPropertyValue("--to")),250)},
+  trash:{t:"trash", tb:"#CFCAB6", w:420, x:.5, y:.4, html:()=>`
+    <div style="display:grid;gap:12px">
+      <p>Things I remove from client setups:</p>
+      <div class="trashlist" id="tl">
+        <div>× untested_backup.zip</div><div>× password123.txt</div><div>× one_disk_no_raid.cfg</div><div>× it_works_on_my_machine.log</div>
+      </div>
+      <button class="btn" id="emptyTrash">Empty trash</button>
+    </div>`}
+};
+// case-study windows are made on demand
+function caseWin(id){const p=PROJECTS.find(x=>x.id===id); return {t:p.file, tb:p.c1==="#161513"?"var(--yellow)":p.c1, w:560, x:.4, y:.12, html:()=>`
+  <div class="case">
+    <div class="art" style="background:${art(p)}"></div>
+    ${p.ex?'<p><span class="example">Example case study · replace with a real one</span></p>':''}
+    <h2>${esc(p.t)}</h2>
+    <dl><dt>Problem</dt><dd>${esc(p.prob)}</dd><dt>What I did</dt><dd>${esc(p.did)}</dd><dt>Result</dt><dd>${esc(p.res)}</dd>
+    <dt>Stack</dt><dd><div class="chips">${p.stack.map(s=>`<span class="chip">${esc(s)}</span>`).join("")}</div></dd></dl>
+    <div class="row"><button class="btn r" data-open="contact">Want something like this?</button></div>
+  </div>`}}
+
+let Z=10, open={}, focusedId=null;
+const desk=$("#desk"), tasks=$("#tasks");
+
+function openWin(id, from){
+  if(open[id]){ const w=open[id]; if(w.hidden){w.hidden=false; pop(w)} focus(id); return w }
+  const def = id.startsWith("case:") ? caseWin(id.slice(5)) : WINS[id]; if(!def) return;
+  const w=document.createElement("section"); w.className="win"+(def.dark?" dark":""); w.dataset.id=id;
+  w.setAttribute("role","dialog"); w.setAttribute("aria-label",def.t);
+  w.style.setProperty("--tb",def.tb);
+  const W=desk.clientWidth, H=desk.clientHeight;
+  const ww=Math.min(def.w, W-24), n=Object.keys(open).length;
+  w.style.width=ww+"px"; if(def.h) w.style.height=Math.min(def.h,H-20)+"px";
+  w.style.left=Math.max(12,Math.min(W-ww-12, W*def.x + n*14))+"px";
+  w.style.top=Math.max(10, Math.min(H-200, H*def.y + n*14))+"px";
+  w.innerHTML=`<div class="bar"><span class="t">${esc(def.t)}${def.sub?`<small>${esc(def.sub)}</small>`:""}</span>
+    <button class="wbtn" data-act="min" aria-label="Minimise ${esc(def.t)}">_</button><button class="wbtn" data-act="close" aria-label="Close ${esc(def.t)}">×</button></div>
+    <div class="body" ${def.pad===false?'style="padding:0"':''}>${def.html()}</div>`;
+  if(from){const r=from.getBoundingClientRect(), d=desk.getBoundingClientRect(); w.style.setProperty("--ox",(r.left+r.width/2-d.left-parseFloat(w.style.left))+"px"); w.style.setProperty("--oy",(r.top+r.height/2-d.top-parseFloat(w.style.top))+"px")}
+  if(isPhone()&&id==="welcome"){ const ic=$("#icons"); w.classList.add("under"); w.style.setProperty("--under",(ic.offsetTop+ic.offsetHeight+6)+"px") }
+  desk.appendChild(w); open[id]=w; pop(w); drag(w); def.init && def.init(w); focus(id); renderTasks();
+  return w;
+}
+function pop(w){ w.classList.remove("opening"); void w.offsetWidth; w.classList.add("opening") }
+function focus(id){ const w=open[id]; if(!w) return; w.style.zIndex=++Z; focusedId=id;
+  Object.values(open).forEach(x=>x.classList.toggle("focused",x===w)); renderTasks() }
+function closeWin(id){ const w=open[id]; if(!w) return; w.classList.add("closing"); delete open[id];
+  setTimeout(()=>w.remove(), reduce?0:220); renderTasks() }
+function minWin(id){ const w=open[id]; if(w){w.hidden=true; renderTasks()} }
+function renderTasks(){
+  tasks.innerHTML=Object.entries(open).map(([id,w])=>`<button class="task ${w.hidden?'min':''} ${focusedId===id&&!w.hidden?'on':''}" data-task="${id}" style="--c:${w.style.getPropertyValue('--tb')}"><i></i>${esc(w.getAttribute("aria-label"))}</button>`).join("");
+}
+function drag(w){
+  const bar=$(".bar",w);
+  bar.addEventListener("pointerdown",e=>{
+    if(e.target.closest(".wbtn")||isPhone()) return; focus(w.dataset.id);
+    const sx=e.clientX, sy=e.clientY, ox=w.offsetLeft, oy=w.offsetTop; bar.setPointerCapture(e.pointerId);
+    let lastX=sx, vx=0;
+    const mv=ev=>{ const x=Math.max(-w.offsetWidth+80,Math.min(desk.clientWidth-80, ox+ev.clientX-sx)), y=Math.max(0,Math.min(desk.clientHeight-40, oy+ev.clientY-sy));
+      vx=ev.clientX-lastX; lastX=ev.clientX; w.style.left=x+"px"; w.style.top=y+"px";
+      if(!reduce) w.style.transform=`rotate(${Math.max(-6,Math.min(6,vx*.6))}deg)` };
+    const up=()=>{ bar.removeEventListener("pointermove",mv); bar.removeEventListener("pointerup",up); bar.removeEventListener("pointercancel",up);
+      w.style.transition="transform .45s cubic-bezier(.2,1.8,.4,1)"; w.style.transform=""; setTimeout(()=>w.style.transition="",460) };
+    bar.addEventListener("pointermove",mv); bar.addEventListener("pointerup",up); bar.addEventListener("pointercancel",up);
+  });
+  w.addEventListener("pointerdown",()=>focus(w.dataset.id));
+}
+
+/* ================= desktop icons ================= */
+const ICONS=[["projects","i-folder","Projects"],["services","i-chip","Services"],["about","i-doc","about-me.txt"],["terminal","i-term","Terminal"],["contact","i-mail","Contact"],["storage","i-nas","NAS-01"],["trash","i-trash","Trash"]];
+$("#icons").innerHTML=ICONS.map(([id,ic,l])=>`<button class="icon" data-icon="${id}"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#${ic}"/></svg><span>${l}</span></button>`).join("");
+$("#drives").innerHTML=[["nas","#2E9E57","NAS"],["ai","#F5C430","AI"],["cloud","#2B57E6","Cloud"]].map(([id,c,l])=>`<button class="icon" data-svc="${id}" style="--dc:${c}"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-disk"/></svg><span>${l}</span></button>`).join("");
+
+let lastTap={id:null,t:0};
+document.addEventListener("click",e=>{
+  const ic=e.target.closest(".icon");
+  if(ic){ document.querySelectorAll(".icon").forEach(x=>x.classList.toggle("sel",x===ic));
+    const id=ic.dataset.icon||"services", now=Date.now();
+    // single tap opens on phones and on keyboard activation; double-click on desktop
+    if(isPhone()||e.detail===0||(lastTap.id===id&&now-lastTap.t<450)){ openWin(id,ic); lastTap={id:null,t:0} } else lastTap={id,t:now};
+    return }
+  const o=e.target.closest("[data-open]"); if(o){ if(document.body.classList.contains("qmode")) setQuick(false); openWin(o.dataset.open,o); return }
+  const c=e.target.closest("[data-case]"); if(c){ openWin("case:"+c.dataset.case,c); return }
+  const b=e.target.closest(".wbtn"); if(b){ const id=b.closest(".win").dataset.id; b.dataset.act==="close"?closeWin(id):minWin(id); return }
+  const t=e.target.closest("[data-task]"); if(t){ const w=open[t.dataset.task]; if(w.hidden){w.hidden=false;pop(w);focus(t.dataset.task)} else if(focusedId===t.dataset.task) minWin(t.dataset.task); else focus(t.dataset.task); return }
+  if(e.target.id==="copyMail"){ const btn=e.target; navigator.clipboard?.writeText(ME.email).then(()=>{btn.textContent="Copied"; setTimeout(()=>btn.textContent="Copy",1500)}).catch(()=>{const r=document.createRange(); r.selectNodeContents($("#mailAddr")); getSelection().removeAllRanges(); getSelection().addRange(r)}); return }
+  if(e.target.id==="emptyTrash"){ $("#tl").classList.add("gone"); e.target.textContent="Trash is empty"; e.target.disabled=true; confetti(e.target); return }
+  if(e.target===desk||e.target.classList.contains("wall")) document.querySelectorAll(".icon").forEach(x=>x.classList.remove("sel"));
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&focusedId&&open[focusedId]) closeWin(focusedId) });
+
+function hopAll(){ if(reduce) return; document.querySelectorAll(".icon").forEach((ic,i)=>setTimeout(()=>{ic.classList.remove("hop"); void ic.offsetWidth; ic.classList.add("hop")},i*70)) }
+$("#brandBtn").addEventListener("click",hopAll);
+$("#startBtn").addEventListener("click",e=>openWin("welcome",e.currentTarget));
+
+/* parallax wallpaper */
+if(!reduce) desk.addEventListener("pointermove",e=>{ const nx=e.clientX/innerWidth-.5, ny=e.clientY/innerHeight-.5;
+  $("#wallText").style.transform=`translate(${nx*-24}px,${ny*-10}px)`;
+  document.querySelectorAll(".pad").forEach(p=>p.style.transform=`translate(${nx*p.dataset.depth}px,${ny*p.dataset.depth}px)`) });
+
+/* clock */
+function tick(){ try{ $("#clock").textContent=new Intl.DateTimeFormat("en-GB",{hour:"2-digit",minute:"2-digit",timeZone:ME.tz}).format(new Date())+" SGT" }catch(e){} }
+tick(); setInterval(tick,15000);
+
+/* confetti (wild mode) */
+function confetti(from){ if(reduce) return; const r=from.getBoundingClientRect(), cols=["#2E9E57","#F5C430","#2B57E6","#EC5A2C","#F3A9C4"];
+  for(let i=0;i<46;i++){ const d=document.createElement("i"); d.className="confetto"; d.style.background=cols[i%5];
+    d.style.left=r.left+r.width/2+"px"; d.style.top=r.top+"px"; document.body.appendChild(d);
+    const a=Math.random()*Math.PI-Math.PI, v=6+Math.random()*9; let x=0,y=0,vx=Math.cos(a)*v,vy=Math.sin(a)*v-4,rot=0,life=0;
+    (function f(){ life++; vy+=.45; x+=vx; y+=vy; rot+=vx*3; d.style.transform=`translate(${x}px,${y}px) rotate(${rot}deg)`; d.style.opacity=1-life/90;
+      if(life<90) requestAnimationFrame(f); else d.remove() })() } }
+
+/* ================= terminal ================= */
+function termInit(w){
+  const out=$(".out",w), inp=$("input",w), body=$(".body",w), hist=[]; let hi=0;
+  const print=(h)=>{ out.insertAdjacentHTML("beforeend",h+"\n"); body.scrollTop=body.scrollHeight };
+  const C={
+    help:()=>`<span class="hi">commands</span>
+  about       who is the frogineer
+  services    what I can do for you
+  projects    list case studies (open &lt;name&gt; to view)
+  storage     check if I have room for your project
+  contact     how to reach me
+  neofetch    system info
+  ribbit      try it
+  clear       clear the screen`,
+    whoami:()=>`visitor (probably about to hire a frogineer)`,
+    about:()=>{openWin("about"); return `<span class="ok">opened</span> about-me.txt`},
+    services:()=>SERVICES.map(s=>`<span class="ok">●</span> ${esc(s.t.padEnd(18))}${esc(s.hook)}`).join("\n")+`\n<span class="dim">type "open services" for details</span>`,
+    projects:()=>PROJECTS.map(p=>`drwxr-xr-x  ${esc(p.id.padEnd(14))}${esc(p.t)}`).join("\n")+`\n<span class="dim">try: open ${PROJECTS[0].id}</span>`,
+    ls:()=>C.projects(),
+    storage:()=>{openWin("storage"); return `nas-01: 2 of 4 project bays free  [<span class="ok">██████████</span>··········] 50%`},
+    contact:()=>{openWin("contact"); return `mail: ${esc(ME.email)}`},
+    neofetch:()=>`<span class="ok">   (o)(o)   </span>  <span class="hi">frog@nas-01</span>
+<span class="ok">  ( ____ )  </span>  os       FrogineerOS 1.0
+<span class="ok">  /|____|\\  </span>  role     consultant · NAS · AI · cloud · web
+<span class="ok">            </span>  uptime   always learning
+              shell    curiosity
+              status   <span class="ok">taking new projects</span>`,
+    ribbit:()=>{hopAll(); confetti(inp); return `<span class="ok">ribbit.</span>`},
+    "sudo":a=>a.join(" ")==="hire-me"?(openWin("contact"),confetti(inp),`<span class="ok">permission granted.</span> opening contact…`):`sudo: try "sudo hire-me"`,
+    date:()=>new Date().toString(),
+    clear:()=>{out.innerHTML=""; return null},
+    open:a=>{ const n=a[0]; if(!n) return "usage: open &lt;window or project&gt;";
+      if(WINS[n]){openWin(n); return `<span class="ok">opened</span> ${esc(n)}`}
+      const p=PROJECTS.find(p=>p.id===n); if(p){openWin("case:"+p.id); return `<span class="ok">opened</span> ${esc(p.file)}`}
+      return `open: ${esc(n)}: not found`},
+    rm:()=>`rm: nice try. backups are protected here.`,
+    exit:()=>{closeWin("terminal"); return null}
+  };
+  print(`<span class="dim">FrogineerOS terminal · type</span> <span class="hi">help</span> <span class="dim">to start</span>`);
+  $("form",w).addEventListener("submit",e=>{ e.preventDefault(); const raw=inp.value.trim(); inp.value=""; if(!raw) return;
+    hist.push(raw); hi=hist.length; print(`<span class="p">frog@nas-01:~$</span> ${esc(raw)}`);
+    const [cmd,...args]=raw.split(/\s+/); const fn=C[cmd.toLowerCase()];
+    const r=fn?fn(args):`${esc(cmd)}: command not found. type <span class="hi">help</span>`; if(r!==null&&r!==undefined) print(r) });
+  inp.addEventListener("keydown",e=>{ if(e.key==="ArrowUp"&&hi>0){inp.value=hist[--hi];e.preventDefault()} if(e.key==="ArrowDown"){inp.value=hist[++hi]||"";hi=Math.min(hi,hist.length)} });
+  w.addEventListener("click",()=>{ if(!getSelection().toString()) inp.focus() });
+  if(!isPhone()) setTimeout(()=>inp.focus(),300);
+}
+
+/* ================= quick view ================= */
+function buildQuick(){
+  $("#quick").innerHTML=`<div class="in">
+    <section class="hero"><span class="label">Freelance consultant · NAS · AI · Cloud · Web</span>
+      <h1 class="chunk">Hi, I'm ${esc(ME.name)}, the Frogineer.</h1>
+      <p style="font-size:19px">I design and build storage, AI and cloud systems for teams that need their data safe, smart and reachable from anywhere. Then I make the screens on top of it a pleasure to use.</p>
+      <div class="row"><button class="btn r" id="qContact">Contact me</button><button class="btn" id="qBack">Back to the desktop</button></div></section>
+    <section><span class="label">Services</span><div class="svc">${SERVICES.map(s=>`<article style="--c:${s.c}"><h3>${esc(s.t)}</h3><p class="hook">${esc(s.hook)}</p><ul>${s.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul><p class="meta">${esc(s.meta)}</p></article>`).join("")}</div></section>
+    <section><span class="label">Selected work</span><div class="projects">${PROJECTS.map(p=>`<article class="pcard"><div class="art" style="background:${art(p)}"></div><div class="m">${p.ex?'<span><span class="example">Example</span></span>':''}<h3 style="font:800 17px/1.2 var(--f-chunk);letter-spacing:-.02em">${esc(p.t)}</h3><p>${esc(p.res)}</p><div class="chips">${p.stack.map(s=>`<span class="chip">${esc(s)}</span>`).join("")}</div></div></article>`).join("")}</div></section>
+    <section id="qc"><span class="label">Contact</span><h2 class="chunk" style="font-size:clamp(30px,5vw,48px)">Let's talk about your data.</h2>
+      <div class="mail" style="max-width:520px"><code>${esc(ME.email)}</code></div><p>Usually replies within one working day. 2 of 4 project slots free this quarter.</p></section>
+  </div>`;
+  $("#qBack").onclick=()=>setQuick(false);
+  $("#qContact").onclick=()=>$("#qc").scrollIntoView({behavior:reduce?"auto":"smooth"});
+}
+function setQuick(on){ document.body.classList.toggle("qmode",on); $("#qvBtn").setAttribute("aria-pressed",on); $("#qvBtn").textContent=on?"Desktop view":"Quick view";
+  if(on){ buildQuick(); scrollTo(0,0) } }
+$("#qvBtn").addEventListener("click",()=>setQuick(!document.body.classList.contains("qmode")));
+
+/* ================= boot ================= */
+const LINES=[["FROG BIOS v1.0 · checking pond…",""],["mounting /projects","ok"],["loading services: nas ai cloud web","ok"],["warming up the terminal","ok"],["starting frogineer-os","ok"]];
+function boot(){
+  const el=$("#boot"), L=$("#bootLines"); let seen=false; try{seen=sessionStorage.getItem("frog-booted")}catch(e){}
+  const finish=()=>{ if(el.classList.contains("done")) return; el.classList.add("done"); try{sessionStorage.setItem("frog-booted","1")}catch(e){}
+    setTimeout(()=>{el.remove(); start()},reduce?0:350) };
+  if(seen||reduce){ el.remove(); start(); return }
+  el.addEventListener("click",finish);
+  LINES.forEach(([t,s],i)=>setTimeout(()=>{ L.insertAdjacentHTML("beforeend",`<div>${t}${s?` <span class="ok">[ ${s} ]</span>`:""}</div>`); if(i===LINES.length-1) setTimeout(finish,450) },220*i+150));
+}
+function start(){
+  openWin("welcome");
+  if(!isPhone()){ setTimeout(()=>{openWin("storage"); focus("welcome")},380) }
+  setTimeout(hopAll,700);
+}
+boot();
+</script>
+
+</body>
+</html>
