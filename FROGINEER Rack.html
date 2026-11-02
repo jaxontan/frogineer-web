@@ -105,6 +105,77 @@ html[data-theme=light]{--bg:#e9e6df;--fg:#1d1f1c;--mut:rgba(29,31,28,.6);--ln:rg
 [data-theme=light] .mq span.o{-webkit-text-stroke-color:rgba(29,31,28,.45)}[data-theme=light] .pc .num{-webkit-text-stroke-color:rgba(29,31,28,.4)}
 [data-theme=light] .mode{background:rgba(233,230,223,.75)}[data-theme=light] .grid>div:hover{background:rgba(47,138,58,.07)}
 [data-theme=light] .btn{color:#f4f2ec}[data-theme=light] .btn .ar{background:#f4f2ec}[data-theme=light] .pre .bar{background:rgba(0,0,0,.08)}
+/* ---------- shutdown + standalone laptop (ported from luxury-v3) ---------- */
+.shut{position:relative;height:100vh;overflow:hidden;background:#171614;display:grid;place-items:center;z-index:3}
+.sd{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#f4e9c8;font-size:13px}
+.sd i{width:200px;height:2px;background:rgba(244,233,200,.18);position:relative;overflow:hidden}
+.sd i::after{content:"";position:absolute;inset:0;background:#f4e9c8;transform-origin:0 50%;transform:scaleX(var(--p,0))}
+.sd small{opacity:.45;font-size:10px}
+.device{position:relative;width:min(620px,78vw);perspective:1700px;margin-top:-8vh;visibility:hidden}
+.device .glow{position:absolute;left:10%;right:10%;top:12%;bottom:0;border-radius:50%;background:#B08D57;filter:blur(100px);opacity:.22;z-index:-1}
+.device .floor{position:absolute;left:-30%;right:-30%;top:78%;height:70%;background:radial-gradient(50% 40% at 50% 30%,rgba(140,107,55,.16),transparent 70%);z-index:-1}
+.tilt,.laptop,.lid,.deck{transform-style:preserve-3d}
+.laptop{position:relative;--lt:5px;--dt:10px}
+.lid{position:relative;transform-origin:50% 100%}
+.front{position:relative;background:linear-gradient(180deg,#24342D,#1B2823);border-radius:2.6% 2.6% .8% .8%/3.9% 3.9% 1.2% 1.2%;padding:1.6% 1.6% 2.4%;box-shadow:0 0 0 1px #CDBD99 inset,0 0 0 2px #8F7B57 inset;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.front::before{content:"";position:absolute;top:.55%;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#2B3A33;box-shadow:0 0 0 1.5px #2E3D36}
+.screen{position:relative;aspect-ratio:16/10;border-radius:4px;overflow:hidden;background:#14201B}
+.screen .glare{position:absolute;inset:0;pointer-events:none;z-index:9;background:linear-gradient(118deg,rgba(255,255,255,.11) 0 26%,rgba(255,255,255,.03) 26.2% 40%,transparent 40.2%)}
+.screen .dim{position:absolute;inset:0;background:#14201B;opacity:0;z-index:8}
+.chin{position:absolute;left:50%;bottom:.5%;transform:translateX(-50%);font:500 7px 'Inter Tight',sans-serif;letter-spacing:.4em;color:rgba(205,189,153,.55);text-transform:uppercase}
+.ledge{position:absolute;background:linear-gradient(90deg,#B7A37E,#E9DFCC 45%,#D6C8AE 70%,#B7A37E)}
+.ledge.t{left:1.4%;right:1.4%;top:0;height:var(--lt);transform-origin:50% 0;transform:rotateX(-90deg);border-radius:2px}
+.back{position:absolute;inset:0;border-radius:2.6% 2.6% .8% .8%/3.9% 3.9% 1.2% 1.2%;transform:translateZ(calc(var(--lt) * -1)) rotateX(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;
+  background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.35) 45%,rgba(255,255,255,0) 60%),repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 1px,transparent 1px 3px),linear-gradient(175deg,#F1EADD 0%,#DDD0B9 55%,#C9B898 100%);box-shadow:0 0 0 1px #B9A47E inset}
+.lidword{font:500 clamp(9px,1.5vw,15px) 'Inter Tight',sans-serif;letter-spacing:.5em;padding-left:.5em;color:#9C8358;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.deck{position:absolute;left:-2.6%;width:105.2%;top:100%;aspect-ratio:1.48/1;transform-origin:50% 0;transform:rotateX(90deg) translateZ(-2px);border-radius:0 0 3.4% 3.4%/0 0 5% 5%;box-shadow:0 0 0 1px #B9A47E inset;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 0,rgba(255,255,255,.18) 50%,rgba(255,255,255,0) 100%),repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,transparent 1px 3px),linear-gradient(180deg,#CBBB9B 0,#EEE6D7 5%,#E7DDCC 55%,#DCCFB9 100%)}
+.hinge{position:absolute;left:11%;right:11%;top:0;height:2.6%;border-radius:0 0 6px 6px;background:linear-gradient(180deg,#1E2C26,#3A4A42)}
+.vent{position:absolute;left:14%;right:14%;top:2.9%;height:1.2%;background:repeating-linear-gradient(90deg,rgba(90,68,34,.45) 0 2px,transparent 2px 5px);opacity:.6}
+.deck .led{position:absolute;right:3.2%;top:52%;width:4px;height:4px;border-radius:50%;background:#7FD6A5;box-shadow:0 0 6px #7FD6A5}
+.kbwell{position:absolute;left:12%;right:12%;top:6%;height:45%;border-radius:1.8%/3%;background:linear-gradient(#CDBFA6,#D6CAB3);box-shadow:inset 0 1px 3px rgba(90,68,34,.35);padding:1% 1.1%}
+.kb{display:grid;grid-template-rows:.62fr repeat(5,1fr);gap:4%;height:100%}
+.kr{display:flex;gap:.6%;min-height:0}
+.kr i{flex:1;border-radius:4px;background:linear-gradient(180deg,#2E3D36,#23312B);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 1px 0 rgba(90,68,34,.45)}
+.spk{position:absolute;top:6%;height:45%;width:8.6%;background-image:radial-gradient(circle,#A8977A 0 32%,transparent 36%);background-size:6px 6px;opacity:.85}.spk.l{left:2.4%}.spk.r{right:2.4%}
+.deck .pad{position:absolute;left:30.5%;right:30.5%;top:55.5%;height:36%;border-radius:2.4%/3.6%;background:linear-gradient(165deg,#EEE6D7,#DED2BD);box-shadow:inset 0 0 0 1px #C6B28E}
+.lip{position:absolute;left:0;right:0;top:100%;height:var(--dt);transform-origin:50% 0;transform:rotateX(-90deg);border-radius:0 0 10px 10px;background:linear-gradient(180deg,#DCCFB8,#B8A47E)}
+.dside{position:absolute;top:0;bottom:0;width:var(--dt);background:linear-gradient(180deg,#D3C5AB,#B8A47E)}
+.dside.l{left:0;transform-origin:0 50%;transform:rotateY(90deg)}.dside.r{right:0;transform-origin:100% 50%;transform:rotateY(-90deg)}
+.cshadow{position:absolute;left:1%;right:1%;top:6%;bottom:-3%;border-radius:6%;background:rgba(90,68,34,.38);filter:blur(16px);transform:translateZ(calc(var(--dt) * -1 - 1px))}
+/* laptop screen: designed at 960x600, scaled to fit */
+.vs{position:absolute;left:0;top:0;width:960px;height:600px;transform-origin:0 0;transform:scale(var(--s,.6));background:#F1EFE9;font:500 15px 'Inter Tight',sans-serif;color:#22332B}
+.vs .mbar{height:30px;display:flex;align-items:center;padding:0 16px;font-weight:600;font-size:14px;background:rgba(255,255,255,.75)}
+.vs .mbar .t{margin-left:auto;font:500 13px 'JetBrains Mono',monospace;color:#7E867E}
+.vs .win{position:absolute;left:40px;right:40px;top:58px;bottom:96px;background:#fff;border-radius:10px;box-shadow:0 20px 50px rgba(20,40,30,.18);overflow:hidden}
+.vs .wbar{height:34px;display:flex;align-items:center;gap:7px;padding:0 14px;border-bottom:1px solid #E1DED5}.vs .wbar i{width:10px;height:10px;border-radius:50%;background:#D2CEC2}.vs .wbar b{margin-left:10px;font-size:13px}
+.vs .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:16px}
+.vs .tile{border:1px solid #E1DED5;border-radius:8px;overflow:hidden}.vs .tile .th{height:112px;display:grid;place-items:center}
+.vs .tile .th u{width:58%;height:56%;background:#fff;border-radius:4px;box-shadow:0 4px 10px rgba(0,0,0,.08);display:block;border-top:10px solid var(--a)}
+.vs .tile b{display:block;padding:9px 10px 2px;font-size:13px;line-height:1.25}.vs .tile small{display:block;padding:0 10px 9px;font:400 11px 'JetBrains Mono',monospace;color:#7E867E}
+.vs .dock{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:10px;padding:8px;background:rgba(255,255,255,.7);border-radius:14px}.vs .dock span{width:40px;height:40px;border-radius:10px;background:var(--c)}
+.shcap{position:absolute;left:0;right:0;bottom:9vh;text-align:center;color:#1d1f1c;visibility:hidden}
+.shcap .mono{color:#5c5a52}.shcap h2{font-size:clamp(38px,5.4vw,84px);line-height:1;letter-spacing:-.03em;margin-top:16px}.shcap h2 i{color:#2f8a3a}
+/* ---------- showcase: horizontal pinned track with layered parallax ---------- */
+.show{position:relative;height:100vh;overflow:hidden;background:var(--bg);z-index:3}
+.shhead{position:absolute;top:13vh;left:4vw;right:4vw;display:flex;justify-content:space-between;color:var(--mut);z-index:2}
+.track{position:absolute;top:0;bottom:0;left:0;display:flex;align-items:center;gap:5vw;padding:0 8vw 0 4vw;will-change:transform}
+.pnl{flex:none;position:relative;width:min(60vw,880px);height:60vh;display:grid;grid-template-rows:1fr auto}
+.pnl.ttl{width:min(42vw,620px);display:flex;flex-direction:column;justify-content:center;gap:24px}
+.pnl.ttl h2{font-size:clamp(48px,6.6vw,110px);line-height:.92;letter-spacing:-.04em}.pnl.ttl h2 i{color:var(--ac)}.pnl.ttl p{color:var(--mut);max-width:30ch;line-height:1.5}
+.pnl .art{position:relative;overflow:hidden;border-radius:12px;background:var(--bgc)}
+.pnl .lay{position:absolute;inset:0;display:grid;place-items:center;will-change:transform}
+.pnl .orb{width:62%;aspect-ratio:1;border-radius:50%;background:var(--a);opacity:.16;transform:translate(-28%,10%)}
+.pnl .mock{width:58%;aspect-ratio:16/10;background:#fff;border-radius:8px;box-shadow:0 30px 60px rgba(30,30,20,.18);overflow:hidden;display:grid;grid-template-rows:22px 1fr}
+.pnl .mock>b{background:#f3f1ea;display:flex;gap:6px;align-items:center;padding:0 10px}.pnl .mock>b i{width:7px;height:7px;border-radius:50%;background:#d2cec2}
+.pnl .mock>div{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;padding:14px}.pnl .mock u{display:block;background:var(--a);border-radius:5px;grid-row:span 2}.pnl .mock s{display:block;background:#ece9e0;border-radius:5px}
+.pnl .chip{transform:translate(70%,-150%);background:#1d1f1c;color:#f4e9c8;padding:10px 16px;border-radius:99px;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.pnl .nm{position:absolute;right:-1vw;top:-11vh;font:400 clamp(110px,15vw,240px)/1 'Instrument Serif',serif;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;z-index:2}
+.pnl .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding-top:20px}
+.pnl h3{font-size:clamp(22px,2.4vw,38px);letter-spacing:-.03em;font-weight:400;line-height:1.08;max-width:22ch}
+.pnl .tg{color:var(--mut);white-space:nowrap}
+.shbar{position:absolute;left:4vw;right:4vw;bottom:9vh;height:1px;background:var(--ln)}.shbar i{display:block;height:100%;background:var(--ac);transform-origin:0 50%;transform:scaleX(0)}
+@media(max-width:800px){.pnl{width:84vw;height:56vh}.pnl.ttl{width:84vw}.device{width:88vw}}
 /* laptop dive -> interactive OS */
 .osfl{position:fixed;inset:0;z-index:1;background:#171614;opacity:0;pointer-events:none}
 .os{position:fixed;inset:0;z-index:250;background:#171614;opacity:0;visibility:hidden;transition:opacity .6s,visibility .6s}
@@ -127,7 +198,7 @@ html,body,.sec,.mq,.ct,.mode{transition:background-color .7s ease,color .7s ease
 </style>
 
 <div class="grain"></div><div class="cur" id="cur"></div>
-<nav class="nav"><b>FROGINEER</b><div class="r mono"><a class="l" href="#tour">Services</a><a class="l" href="#proof">Proof</a><a class="l" href="#work">Work</a><a class="l" href="#process">Process</a><span class="live">Taking projects</span><a href="#contact">Contact &rarr;</a></div></nav>
+<nav class="nav"><b>FROGINEER</b><div class="r mono"><a class="l" href="#tour">Services</a><a class="l" href="#proof">Proof</a><a class="l" href="#show">Work</a><a class="l" href="#process">Process</a><span class="live">Taking projects</span><a href="#contact">Contact &rarr;</a></div></nav>
 <canvas id="gl"></canvas>
 <div class="osfl" id="osfl"></div>
 <div class="os" id="os"><iframe id="osf" title="Frogineer OS"></iframe><div class="osbar mono"><button id="osback">&uarr; Back to the rack</button><button id="osnext">Continue &darr;</button></div></div><div class="vig"></div>
@@ -149,9 +220,30 @@ html,body,.sec,.mq,.ct,.mode{transition:background-color .7s ease,color .7s ease
   <div id="chs"></div>
 </section>
 
-<div class="mq"><div class="t"><span>AI &amp; Automation</span><span class="o">NAS Storage</span><span class="ser">On-prem AI</span><span class="o">Web Design</span><span>Oracle APEX</span><span class="o">DBA</span><span class="ser">Cloud</span><span class="o">Telco</span><span>AI &amp; Automation</span><span class="o">NAS Storage</span><span class="ser">On-prem AI</span><span class="o">Web Design</span><span>Oracle APEX</span><span class="o">DBA</span><span class="ser">Cloud</span><span class="o">Telco</span></div></div>
+<!-- after the OS: shut down, then the standalone laptop closes on cream -->
+<section class="shut" id="shut">
+  <div class="sd mono" id="sd"><span>Shutting down</span><i></i><small>saving session &middot; syncing nas &middot; goodbye</small></div>
+  <div class="device" id="device"><div class="glow"></div><div class="floor"></div>
+    <div class="tilt" id="tilt"><div class="laptop" id="laptop">
+      <div class="lid" id="lid"><div class="front"><div class="screen" id="screen">
+        <div class="vs" id="vs"><div class="mbar">Selected work<span class="t">09:47</span></div>
+          <div class="win"><div class="wbar"><i></i><i></i><i></i><b>~/work &middot; 6 projects</b></div><div class="tiles" id="tiles"></div></div>
+          <div class="dock"><span style="--c:#D99A1E"></span><span style="--c:#2E6B4F"></span><span style="--c:#7A5BD3"></span><span style="--c:#2F5BD3"></span><span style="--c:#22332B"></span><span style="--c:#8A6B3E"></span></div></div>
+        <div class="dim" id="dim"></div><div class="glare"></div></div><span class="chin">Frogineer</span></div>
+        <div class="ledge t"></div><div class="back"><span class="lidword">FROGINEER</span></div></div>
+      <div class="deck"><div class="cshadow"></div><div class="hinge"></div><div class="vent"></div><div class="led"></div>
+        <div class="spk l"></div><div class="kbwell"><div class="kb" id="kb"></div></div><div class="spk r"></div><div class="pad"></div>
+        <div class="lip"></div><div class="dside l"></div><div class="dside r"></div></div>
+    </div></div></div>
+  <div class="shcap"><span class="mono">Selected work</span><h2 class="ser">Six builds. <i>Scroll sideways.</i></h2></div>
+</section>
 
-<section class="sec man" id="man"><span class="k mono">Manifesto</span><p id="mp">Your data should live where you can see it, your automations should run while you sleep, and your websites should make clients lean in. We build that quietly, then we stay.</p></section>
+<!-- showcase: pinned horizontal scroll, each panel's artwork moves in layers -->
+<section class="show" id="show">
+  <div class="shhead"><span class="mono">Selected work</span><span class="mono" id="shn">01 / 06</span></div>
+  <div class="track" id="track"></div>
+  <div class="shbar"><i id="shbar"></i></div>
+</section>
 
 <section class="sec" id="proof"><span class="k mono">Proof</span>
 <div class="quote"><blockquote class="rv">&ldquo;Helped us <em>save on cloud storage</em> and keep our data private.&rdquo;</blockquote><div class="by mono">Client feedback<br>Small business, Singapore<br><span style="opacity:.5">[replace with exact words + name]</span></div></div>
@@ -173,15 +265,6 @@ html,body,.sec,.mq,.ct,.mode{transition:background-color .7s ease,color .7s ease
 <div><span class="no mono">E</span><h4>Teams with <i>sensitive data</i></h4></div>
 <div><span class="no mono">F</span><h4>Employers &amp; <i>recruiters</i></h4></div></div></section>
 
-<section class="sec" id="work"><span class="k mono">Selected work</span><h2 class="hd rv">Work that <span class="ser"><i>pays</i></span> for itself.</h2>
-<div class="wl" id="wl">
-<a href="#contact" data-c="linear-gradient(135deg,#1c3a2a,#c8ff4d)" data-t="NAS"><span class="mono">01</span><h4>Private storage for a small business</h4><p>Cloud storage costs down, files kept on-site and backed up.</p><span class="tg mono">NAS / Backup</span></a>
-<a href="#contact" data-c="linear-gradient(135deg,#10161c,#4a86ff)" data-t="AI"><span class="mono">02</span><h4>Local AI assistant for a document-heavy team</h4><p>Answers from their own files, nothing sent outside.</p><span class="tg mono">On-prem AI</span></a>
-<a href="#contact" data-c="linear-gradient(135deg,#3a1d1d,#ff7a45)" data-t="APEX"><span class="mono">03</span><h4>Oracle APEX portal replacing spreadsheets</h4><p>One app, roles and reports, on a tuned database.</p><span class="tg mono">APEX / DBA</span></a>
-<a href="#contact" data-c="linear-gradient(135deg,#1a1a2e,#a06bff)" data-t="NET"><span class="mono">04</span><h4>Home &amp; office network rebuild</h4><p>Mesh, VLANs and fibre that finally stay up.</p><span class="tg mono">Telco / Network</span></a>
-<a href="#contact" data-c="linear-gradient(135deg,#232323,#efede6)" data-t="WEB"><span class="mono">05</span><h4>Studio website with scroll storytelling</h4><p>Motion and 3D that convert, held to a performance budget.</p><span class="tg mono">Web / GSAP</span></a>
-</div><p class="mono" style="margin-top:4vh;color:var(--mut)">Case studies: replace with your real projects.</p></section>
-
 <section class="sec" id="process"><span class="k mono">Process</span>
 <div class="pc"><div class="st"><h2 class="hd rv" style="margin:0">Four moves. <span class="ser"><i>No drama.</i></span></h2></div>
 <div>
@@ -190,8 +273,6 @@ html,body,.sec,.mq,.ct,.mode{transition:background-color .7s ease,color .7s ease
 <div class="step"><div class="num">03<b>03</b></div><div><h4>Build</h4><p>Hardware, software, automations and design, delivered and tested before you rely on it.</p></div></div>
 <div class="step"><div class="num">04<b>04</b></div><div><h4>Care</h4><p>Monitoring, restore drills and a person who picks up the phone.</p></div></div>
 </div></div></section>
-
-<div class="mq" style="border-top:0"><div class="t rev"><span class="o">Synology</span><span>TrueNAS</span><span class="o">Ollama</span><span class="ser">n8n</span><span class="o">Oracle APEX</span><span>PostgreSQL</span><span class="o">GSAP</span><span class="ser">Three.js</span><span class="o">Synology</span><span>TrueNAS</span><span class="o">Ollama</span><span class="ser">n8n</span><span class="o">Oracle APEX</span><span>PostgreSQL</span><span class="o">GSAP</span><span class="ser">Three.js</span></div></div>
 
 <section class="ct" id="contact"><div><span class="mono" style="color:var(--mut)">Next step</span><h2 class="ser" style="margin-top:3vh"><span class="ln"><span>Let's make</span></span><span class="ln"><span>it <i>disappear.</i></span></span></h2></div>
 <div><div class="row"><a class="btn" id="mb" href="mailto:yuejun.tan@miracleoy.fi">Start a conversation <span class="ar">&nearr;</span></a><a class="mail" href="mailto:yuejun.tan@miracleoy.fi">yuejun.tan@miracleoy.fi</a></div>
@@ -413,7 +494,7 @@ itl.to('#intro .ib,#intro .icue',{opacity:0,y:-40,duration:.2},0)
 function hole(){var r=eyeEl.getBoundingClientRect(),rr=r.width/2*.64*Math.min(1,itl.progress()*9),m=rr<.5?'none':'radial-gradient(circle at '+(r.left+r.width/2)+'px '+(r.top+r.height/2)+'px,transparent '+rr+'px,#000 '+(rr+1)+'px)';intro.style.webkitMaskImage=m;intro.style.maskImage=m}
 itl.eventCallback('onUpdate',hole);hole();
 addEventListener('mousemove',function(e){if(itl.progress()>0)return;var r=eyeEl.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,d=Math.hypot(dx,dy)||1,m=Math.min(r.width*.14,d*.15);ipu.style.translate=(dx/d*m).toFixed(1)+'px '+(dy/d*m).toFixed(1)+'px'});
-var U=function(i){return 1.2+i*1.8},LAST=U(NC-1),OST=LAST+5.4,END=OST+2.6;
+var U=function(i){return 1.2+i*1.8},LAST=U(NC-1),OST=LAST+5.4,END=OST+.4;
 var tl=gsap.timeline({defaults:{ease:'none'},scrollTrigger:{trigger:'#tour',start:'top top',end:function(){return '+='+innerHeight*END*.55},pin:true,scrub:.9,anticipatePin:1,
  onUpdate:function(s){var t=s.progress*END,i=Math.round((t-1.2)/1.8);if(t<.6)i=-1;if(t>LAST+1.2)i=-1;pli.forEach(function(li,k){li.classList.toggle('on',k==i)});
   // the OS opens when the dive reaches the screen (time OST) and stays shut once dismissed until you scroll well away
@@ -424,7 +505,7 @@ function openOS(){osOn=true;if(!osF.src)osF.src='os-version.html';osEl.classList
 function closeOS(){osOn=false;osEl.classList.remove('on');lenis.start()}
 // one unit of timeline time = innerHeight*.55 px of scroll
 document.getElementById('osback').addEventListener('click',function(){osDone=true;closeOS();lenis.scrollTo(scrollY-innerHeight*.55*3,{duration:1.6})});
-document.getElementById('osnext').addEventListener('click',function(){osDone=true;closeOS();lenis.scrollTo(scrollY+innerHeight*.55*2,{duration:2})});
+document.getElementById('osnext').addEventListener('click',function(){osDone=true;closeOS();lenis.scrollTo('#shut',{duration:1.4})});
 tl.to(door.rotation,{y:-1.85,duration:.9,ease:'power2.inOut'},.2).to(door.rotation,{y:0,duration:.9,ease:'power2.inOut'},LAST+1.0);
 tl.to('#hero',{opacity:0,y:-60,duration:.7},0).to('#prog,#mode',{opacity:1,duration:.4},.5);
 for(var i=0;i<NC;i++){(function(i){var t=U(i),k=K[i],p=parts[NAMES[i]];
@@ -445,14 +526,39 @@ tl.to(zo,{v:0,duration:1,ease:'power2.inOut'},LAST+2.0).to(cp,Object.assign({dur
  .to(lg.rotation,{x:-.28,duration:.7,ease:'power2.out'},OST-2.1).to(ls,{v:1,duration:.3},OST-1.8).to(bp,{v:1,duration:.7,ease:'none'},OST-1.7)
  .to(cp,{px:sP.x+sN.x*.42,py:sP.y+sN.y*.42,pz:sP.z+sN.z*.42,tx:sP.x,ty:sP.y,tz:sP.z,duration:.9,ease:'power3.in'},OST-1.0)
  .to('#osfl',{opacity:1,duration:.3,ease:'none'},OST-.35)
-// 4) after the OS: back out, the lid closes on "Jaxon's PC", then the page carries on
- .to('#osfl',{opacity:0,duration:.3,ease:'none'},OST+.3).to(cp,Object.assign({duration:.9},near),OST+.3)
- .to(ls,{v:0,duration:.3},OST+1.0).to(lg.rotation,{x:1.5708,duration:.7,ease:'power2.in'},OST+1.0)
-// 5) once the lid is shut the room brightens and the rest of the page continues in the light theme
- .to(lv,{v:1,duration:.7,ease:'power1.inOut',onUpdate:thm},OST+1.8)
- .to('#gl',{opacity:0,duration:.5},END-.5).to({},{duration:.01},END);
-var lastT=null;function thm(){var t=lv.v>.5?'light':'dark';if(t!=lastT){lastT=t;document.documentElement.dataset.theme=t;dispatchEvent(new Event('themechange'))}}
-ScrollTrigger.create({trigger:'#man',start:'top bottom',onEnter:function(){vis=false},onLeaveBack:function(){vis=true}});
+ .to({},{duration:.01},END);
+// after the OS the story moves to #shut (shutdown + standalone laptop), see below
+ScrollTrigger.create({trigger:'#shut',start:'top top',onEnter:function(){vis=false},onLeaveBack:function(){vis=true}});
+/* ---------- shutdown -> standalone laptop closes ---------- */
+var PROJ=[['Hybrid NAS for a 40-person design studio','Storage','#cfe0d2','#2E6B4F'],['Private AI search over 2 TB of contracts','Private AI','#ddd6ef','#7A5BD3'],['Leaner cloud setup for a SaaS backend','Cloud','#d6ddef','#2F5BD3'],
+ ['Disaster recovery for a small clinic','Storage + Cloud','#efe3c4','#C98A12'],['Monitoring dashboard for 12 storage servers','Web','#dedad0','#22332B'],['This website','Web &middot; GSAP &middot; Three.js','#d3e3d5','#2E6B4F']];
+document.getElementById('tiles').innerHTML=PROJ.map(function(p){return '<div class="tile"><div class="th" style="background:'+p[2]+';--a:'+p[3]+'"><u></u></div><b>'+p[0]+'</b><small>'+p[1]+' &middot; example</small></div>'}).join('');
+document.getElementById('kb').innerHTML=[14,14,14,13,12,9].map(function(n){return '<div class="kr">'+new Array(n+1).join('<i></i>')+'</div>'}).join('');
+function fitVS(){var s=document.getElementById('screen');document.getElementById('vs').style.setProperty('--s',s.clientWidth/960)}fitVS();addEventListener('resize',fitVS);
+var lastTh='dark';function setTheme(t){if(t==lastTh)return;lastTh=t;document.documentElement.dataset.theme=t;dispatchEvent(new Event('themechange'))}
+gsap.set('#laptop',{rotationX:-6});gsap.set('#device',{autoAlpha:0});
+gsap.timeline({defaults:{ease:'none'},scrollTrigger:{trigger:'#shut',start:'top top',end:'+=260%',pin:true,scrub:.8,invalidateOnRefresh:true,onUpdate:function(s){setTheme(s.progress>.28?'light':'dark')}}})
+ .fromTo('#sd',{'--p':0},{'--p':1,duration:.6},0).to('#sd',{autoAlpha:0,duration:.25},.6)
+ .to('#shut',{backgroundColor:'#e9e6df',duration:.4},.7)
+ .fromTo('#device',{autoAlpha:0,y:70,scale:.9},{autoAlpha:1,y:0,scale:1,duration:.5,ease:'power3.out'},.8)
+ .to('#dim',{opacity:.92,duration:.4},1.5)
+ .to('#lid',{rotationX:-89.4,duration:.9,ease:'power2.inOut'},1.7)
+ .to('#laptop',{rotationX:-52,duration:.9,ease:'power2.inOut'},1.85)
+ .to('#device',{scale:.6,y:'-6vh',duration:.9,ease:'power2.inOut'},1.85)
+ .fromTo('.shcap',{autoAlpha:0,y:30},{autoAlpha:1,y:0,duration:.4,ease:'power3.out'},2.5).to({},{duration:.3});
+/* ---------- showcase: horizontal track, layered parallax per panel ---------- */
+var tr=document.getElementById('track');
+tr.innerHTML='<div class="pnl ttl"><h2 class="ser">Work that <i>pays</i> for itself.</h2><p>Storage, private AI, cloud and the web. Examples for now, real case studies next.</p></div>'+
+ PROJ.map(function(p,i){return '<article class="pnl"><span class="nm">0'+(i+1)+'</span><div class="art" style="--bgc:'+p[2]+';--a:'+p[3]+'"><div class="lay" data-d="18"><div class="orb"></div></div>'+
+ '<div class="lay" data-d="-8"><div class="mock"><b><i></i><i></i><i></i></b><div><u></u><s></s><s></s></div></div></div><div class="lay" data-d="-26"><span class="chip">'+p[1]+'</span></div></div>'+
+ '<div class="meta"><h3>'+p[0]+'</h3><span class="tg mono">0'+(i+1)+' &middot; example</span></div></article>'}).join('');
+var shn=document.getElementById('shn'),shb=document.getElementById('shbar');
+var hz=gsap.to(tr,{x:function(){return -(tr.scrollWidth-innerWidth)},ease:'none',scrollTrigger:{trigger:'#show',start:'top top',end:function(){return '+='+(tr.scrollWidth-innerWidth)},pin:true,scrub:.8,invalidateOnRefresh:true,
+ onUpdate:function(s){shb.style.transform='scaleX('+s.progress+')';shn.textContent='0'+Math.min(6,1+Math.floor(s.progress*6.2))+' / 06'}}});
+tr.querySelectorAll('.pnl').forEach(function(p){var ct={containerAnimation:hz,trigger:p,start:'left right',end:'right left',scrub:true};
+ p.querySelectorAll('.lay').forEach(function(l){var d=+l.dataset.d;gsap.fromTo(l,{xPercent:d},{xPercent:-d,ease:'none',scrollTrigger:ct})});
+ var nm=p.querySelector('.nm');if(nm)gsap.fromTo(nm,{xPercent:60},{xPercent:-60,ease:'none',scrollTrigger:ct});
+ var art=p.querySelector('.art');if(art)gsap.fromTo(art,{clipPath:'inset(0 0 0 100%)'},{clipPath:'inset(0 0 0 0%)',ease:'none',scrollTrigger:{containerAnimation:hz,trigger:p,start:'left 100%',end:'left 55%',scrub:true}})});
 document.querySelectorAll('#mode button').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('#mode button').forEach(function(x){x.classList.toggle('on',x==b)});gsap.to(surf,{v:+b.dataset.m,duration:1.1,ease:'power2.inOut'})})});
 /* hero intro + preloader */
 gsap.set('.hero h1 .ln span',{yPercent:110});gsap.set('.hero .meta,.hero .foot,.nav',{opacity:0});
@@ -464,8 +570,6 @@ document.querySelectorAll('.hd').forEach(function(h){splitW(h);gsap.from(h.query
 gsap.from('.quote blockquote',{y:60,opacity:0,duration:1.4,ease:'expo.out',scrollTrigger:{trigger:'.quote',start:'top 80%'}});
 document.querySelectorAll('.grid>div').forEach(function(c,i){gsap.from(c,{y:50,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:c,start:'top 92%'}})});
 // manifesto
-var mp=document.getElementById('mp');mp.innerHTML=mp.textContent.split(' ').map(function(w){var h=/^(data|automations|websites|stay)/i.test(w)?' h':'';return '<span class="w'+h+'">'+w+'</span>'}).join(' ');
-gsap.to('#mp .w',{opacity:1,filter:'blur(0px)',stagger:.1,ease:'none',scrollTrigger:{trigger:'#man',start:'top 60%',end:'bottom 70%',scrub:true}});
 // process numerals
 document.querySelectorAll('.pc .num b').forEach(function(b){gsap.to(b,{clipPath:'inset(0% 0 0 0)',ease:'none',scrollTrigger:{trigger:b.closest('.step'),start:'top 70%',end:'center 40%',scrub:true}})});
 gsap.utils.toArray('.pc .step p,.pc .step h4').forEach(function(e){gsap.from(e,{y:30,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:e,start:'top 88%'}})});
